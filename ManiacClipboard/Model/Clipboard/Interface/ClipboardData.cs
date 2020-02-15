@@ -32,6 +32,7 @@ namespace ManiacClipboard.Model
         /// </summary>
         /// <param name="data">Data to be stored.</param>
         /// <param name="type">Type of the data.</param>
+        /// <param name="copyTime">Date and time when data was stored.</param>
         /// <exception cref="ArgumentNullException">Throws when data is null.</exception>
         /// <exception cref="ArgumentException">Throws when type is not defined.</exception>
         protected ClipboardData(object data, ClipboardDataType type, DateTime copyTime) : this(data, type)
