@@ -40,6 +40,33 @@ namespace ManiacClipboard.Model
             CopyTime = copyTime;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClipboardData"/> class.
+        /// </summary>
+        /// <param name="data">Data to be stored.</param>
+        /// <param name="type">Type of the data.</param>
+        /// <param name="source">Source where the stored data comes from.</param>
+        /// <exception cref="ArgumentNullException">Throws when data is null.</exception>
+        /// <exception cref="ArgumentException">Throws when type is not defined.</exception>
+        protected ClipboardData(object data, ClipboardDataType type, ClipboardSource source) : this(data, type)
+        {
+            Source = source;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClipboardData"/> class.
+        /// </summary>
+        /// <param name="data">Data to be stored.</param>
+        /// <param name="type">Type of the data.</param>
+        /// <param name="copyTime">Date and time when data was stored.</param>
+        /// <param name="source">Source where the stored data comes from.</param>
+        /// <exception cref="ArgumentNullException">Throws when data is null.</exception>
+        /// <exception cref="ArgumentException">Throws when type is not defined.</exception>
+        protected ClipboardData(object data, ClipboardDataType type, DateTime copyTime, ClipboardSource source) : this(data, type, copyTime)
+        {
+            Source = source;
+        }
+
         #endregion
 
         #region Properties
@@ -58,6 +85,11 @@ namespace ManiacClipboard.Model
         /// Gets date and time when data was stored.
         /// </summary>
         public DateTime CopyTime { get; } = DateTime.Now;
+
+        /// <summary>
+        /// Gets the source where the stored data comes from. Can be null!
+        /// </summary>
+        public ClipboardSource Source { get; }
 
         #endregion
 
