@@ -74,7 +74,7 @@ namespace ManiacClipboard.Model
         /// <summary>
         /// Gets stored data.
         /// </summary>
-        public object Data { get; }
+        public virtual object Data { get; }
 
         /// <summary>
         /// Gets type of stored data.
@@ -115,6 +115,74 @@ namespace ManiacClipboard.Model
         /// Disposes stored data.
         /// </summary>
         public virtual void Dispose() { }
+
+        #endregion
+
+    }
+
+    /// <summary>
+    /// Represents data that can be stored on the clipboard.
+    /// </summary>
+    /// <typeparam name="T">Type of stored data.</typeparam>
+    public abstract class ClipboardData<T> : ClipboardData
+    {
+        #region Constructors
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClipboardData"/> class.
+        /// </summary>
+        /// <param name="data">Data to be stored.</param>
+        /// <param name="type">Type of the data.</param>
+        /// <exception cref="ArgumentNullException">Throws when data is null.</exception>
+        /// <exception cref="ArgumentException">Throws when type is not defined.</exception>
+        protected ClipboardData(T data, ClipboardDataType type) : base(data, type)
+        {
+
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClipboardData"/> class.
+        /// </summary>
+        /// <param name="data">Data to be stored.</param>
+        /// <param name="type">Type of the data.</param>
+        /// <param name="copyTime">Date and time when data was stored.</param>
+        /// <exception cref="ArgumentNullException">Throws when data is null.</exception>
+        /// <exception cref="ArgumentException">Throws when type is not defined.</exception>
+        protected ClipboardData(T data, ClipboardDataType type, DateTime copyTime) : base(data, type, copyTime)
+        {
+
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClipboardData"/> class.
+        /// </summary>
+        /// <param name="data">Data to be stored.</param>
+        /// <param name="type">Type of the data.</param>
+        /// <param name="source">Source where the stored data comes from.</param>
+        /// <exception cref="ArgumentNullException">Throws when data is null.</exception>
+        /// <exception cref="ArgumentException">Throws when type is not defined.</exception>
+        protected ClipboardData(T data, ClipboardDataType type, ClipboardSource source) : base(data, type, source)
+        {
+
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClipboardData"/> class.
+        /// </summary>
+        /// <param name="data">Data to be stored.</param>
+        /// <param name="type">Type of the data.</param>
+        /// <param name="copyTime">Date and time when data was stored.</param>
+        /// <param name="source">Source where the stored data comes from.</param>
+        /// <exception cref="ArgumentNullException">Throws when data is null.</exception>
+        /// <exception cref="ArgumentException">Throws when type is not defined.</exception>
+        protected ClipboardData(T data, ClipboardDataType type, DateTime copyTime, ClipboardSource source) : base(data, type, copyTime, source)
+        {
+
+        }
+
+        #endregion
+
+        #region Properties
 
         #endregion
 
