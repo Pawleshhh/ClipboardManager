@@ -53,7 +53,7 @@ namespace ManiacClipboard.Model.Tests
         }
 
         [TestMethod]
-        public void GetHashCode_ReturnsExpectedValue()
+        public void GetHashCode_GetHashCodeReturnsExpectedValue()
         {
             var clipboardData = new MockClipboardData("data", ClipboardDataType.Text)
                 { GetHashCodeReturnValue = 13 };
