@@ -33,7 +33,7 @@ namespace ManiacClipboard.Model
 
         private void Initialize(string[] formats)
         {
-            _formats = formats;
+            _formats = formats ?? new string[0];
             _isDisposable = Data is IDisposable;
 
             if (!_isDisposable)
@@ -76,7 +76,10 @@ namespace ManiacClipboard.Model
             if (ReferenceEquals(this, obj))
                 return true;
 
-            return Data.Equals(obj);
+            if (obj is UnknownClipboardData data)
+                return Data.Equals(data.Data);
+
+            return false;
         }
 
         public override int GetHashCode() => Data.GetHashCode() * 13 * 17;
@@ -95,6 +98,7 @@ namespace ManiacClipboard.Model
             {
                 ((IDisposable)Data).Dispose();
                 _isDisposed = true;
+                GC.SuppressFinalize(this);
             }
         }
 
