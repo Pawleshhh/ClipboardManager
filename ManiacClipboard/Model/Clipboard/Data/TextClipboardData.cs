@@ -7,6 +7,22 @@ namespace ManiacClipboard.Model
     /// </summary>
     public class TextClipboardData : ClipboardData<string>, IEquatable<TextClipboardData>
     {
+        protected TextClipboardData(string data, ClipboardDataType type) : base(data, type)
+        {
+        }
+
+        protected TextClipboardData(string data, ClipboardDataType type, DateTime copyTime) : base(data, type, copyTime)
+        {
+        }
+
+        protected TextClipboardData(string data, ClipboardDataType type, ClipboardSource source) : base(data, type, source)
+        {
+        }
+
+        protected TextClipboardData(string data, ClipboardDataType type, DateTime copyTime, ClipboardSource source) : base(data, type, copyTime, source)
+        {
+        }
+
         public TextClipboardData(string data) : base(data, ClipboardDataType.Text)
         {
         }
