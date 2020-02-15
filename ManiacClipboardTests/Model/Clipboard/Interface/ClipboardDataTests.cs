@@ -19,7 +19,7 @@ namespace ManiacClipboard.Model.Tests
         [TestMethod]
         public void Dispose_InvokingDisposeMethod_DataIsDisposed()
         {
-            var clipboardData = new MockClipboardData(new object());
+            var clipboardData = new MockClipboardData(new object(), ClipboardDataType.Unknown);
 
             clipboardData.Dispose();
 
@@ -33,7 +33,7 @@ namespace ManiacClipboard.Model.Tests
         class MockClipboardData : ClipboardData
         {
 
-            public MockClipboardData(object data) : base(data) { }
+            public MockClipboardData(object data, ClipboardDataType type) : base(data, type) { }
 
             public bool WasDisposed { get; private set; } = false;
 

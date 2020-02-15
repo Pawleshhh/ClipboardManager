@@ -13,7 +13,7 @@ namespace ManiacClipboard.Model
         /// Initializes a new instance of the <see cref="ClipboardData"/> class.
         /// </summary>
         /// <param name="data">Data to be stored.</param>
-        protected ClipboardData(object data)
+        protected ClipboardData(object data, ClipboardDataType type)
         {
 
         }
