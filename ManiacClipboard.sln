@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.29521.150
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ManiacClipboard", "ManiacClipboard\ManiacClipboard.csproj", "{BCB46F87-43B5-4765-8B69-EEBAE29C8A79}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ManiacClipboardTests", "ManiacClipboardTests\ManiacClipboardTests.csproj", "{981FCB3B-4517-49F1-846C-B74923F40ACE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{BCB46F87-43B5-4765-8B69-EEBAE29C8A79}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BCB46F87-43B5-4765-8B69-EEBAE29C8A79}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BCB46F87-43B5-4765-8B69-EEBAE29C8A79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{981FCB3B-4517-49F1-846C-B74923F40ACE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{981FCB3B-4517-49F1-846C-B74923F40ACE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{981FCB3B-4517-49F1-846C-B74923F40ACE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{981FCB3B-4517-49F1-846C-B74923F40ACE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

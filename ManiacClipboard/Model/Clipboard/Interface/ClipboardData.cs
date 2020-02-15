@@ -9,6 +9,11 @@ namespace ManiacClipboard.Model
     {
         #region Constructors
 
+        protected ClipboardData(object data)
+        {
+
+        }
+
         #endregion
 
         #region Properties
