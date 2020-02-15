@@ -17,6 +17,20 @@ namespace ManiacClipboard.Model.Tests
         #region Tests
 
         [TestMethod]
+        public void TwoParametersConstructor_GivenDataIsNull_ThrowsArgumentNullException()
+        {
+            Assert.ThrowsException<ArgumentNullException>(
+                () => new MockClipboardData(null, ClipboardDataType.Audio));
+        }
+
+        [TestMethod]
+        public void TwoParametersConstructor_GivenTypeIsNotDefined_ThrowsArgumentException()
+        {
+            Assert.ThrowsException<ArgumentException>(
+                () => new MockClipboardData(new object(), (ClipboardDataType)int.MaxValue));
+        }
+
+        [TestMethod]
         public void Dispose_InvokingDisposeMethod_DataIsDisposed()
         {
             var clipboardData = new MockClipboardData(new object(), ClipboardDataType.Unknown);

@@ -13,14 +13,33 @@ namespace ManiacClipboard.Model
         /// Initializes a new instance of the <see cref="ClipboardData"/> class.
         /// </summary>
         /// <param name="data">Data to be stored.</param>
+        /// <param name="type">Type of the data.</param>
+        /// <exception cref="ArgumentNullException">Throws when data is null.</exception>
+        /// <exception cref="ArgumentException">Throws when type is not defined.</exception>
         protected ClipboardData(object data, ClipboardDataType type)
         {
+            if (data == null)
+                throw new ArgumentNullException("data", "The data parameter cannot be null.");
+            if (!Enum.IsDefined(typeof(ClipboardDataType), type))
+                throw new ArgumentException("The type parameter's value must be defined.", "type");
 
+            Data = data;
+            DataType = type;
         }
 
         #endregion
 
         #region Properties
+
+        /// <summary>
+        /// Gets stored data.
+        /// </summary>
+        public object Data { get; }
+
+        /// <summary>
+        /// Gets type of stored data.
+        /// </summary>
+        public ClipboardDataType DataType { get; }
 
         #endregion
 
