@@ -78,5 +78,16 @@ namespace ManiacClipboard.Model.Tests
             Assert.IsFalse(result);
         }
 
+        [TestMethod]
+        public void GetHashCode_ReturnsExpectedHashCode()
+        {
+            int expectedHashCode = "data".GetHashCode() * 17;
+            var clipboardData = new TextClipboardData("data");
+
+            int result = clipboardData.GetHashCode();
+
+            Assert.AreEqual(expectedHashCode, result);
+        }
+
     }
 }
