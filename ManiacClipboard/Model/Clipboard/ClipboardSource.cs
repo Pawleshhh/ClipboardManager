@@ -15,11 +15,11 @@ namespace ManiacClipboard.Model
         /// Initializes a new instance of the <see cref="ClipboardSource"/> class.
         /// </summary>
         /// <param name="appName">Name of the source.</param>
-        /// <exception cref="ArgumentNullException">Throws when appName is null or empty.</exception>
+        /// <exception cref="ArgumentException">Throws when appName is null or empty.</exception>
         public ClipboardSource(string appName)
         {
             if (string.IsNullOrEmpty(appName))
-                throw new ArgumentNullException("appName", "The appName parameter cannot be null or empty.");
+                throw new ArgumentException("The appName parameter cannot be null or empty.", "appName");
 
             AppName = appName;
         }
