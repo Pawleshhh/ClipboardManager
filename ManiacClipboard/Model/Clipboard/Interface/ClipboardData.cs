@@ -91,9 +91,25 @@ namespace ManiacClipboard.Model
         /// </summary>
         public ClipboardSource Source { get; }
 
+        /// <summary>
+        /// Gets or sets the tag name of stored data.
+        /// </summary>
+        public string TagName { get; set; }
+
+        /// <summary>
+        /// Gets or sets whether the stored data is supposed to be kept or not.
+        /// </summary>
+        public bool KeepThat { get; set; }
+
         #endregion
 
         #region Public methods
+
+        public abstract override bool Equals(object obj);
+
+        public abstract override int GetHashCode();
+
+        public override string ToString() => Data.ToString();
 
         /// <summary>
         /// Disposes stored data.

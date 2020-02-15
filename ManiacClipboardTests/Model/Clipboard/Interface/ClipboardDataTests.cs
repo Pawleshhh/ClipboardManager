@@ -40,6 +40,29 @@ namespace ManiacClipboard.Model.Tests
             Assert.IsTrue(clipboardData.WasDisposed);
         }
 
+        [DataTestMethod]
+        [DataRow(true)]
+        [DataRow(false)]
+        public void Equals_EqualsReturnsExpectedValue(bool expected)
+        {
+            var clipboardData = new MockClipboardData("data", ClipboardDataType.Text) { EqualsReturnValue = expected };
+
+            bool result = clipboardData.Equals(new object());
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [TestMethod]
+        public void GetHashCode_ReturnsExpectedValue()
+        {
+            var clipboardData = new MockClipboardData("data", ClipboardDataType.Text)
+                { GetHashCodeReturnValue = 13 };
+
+            int result = clipboardData.GetHashCode();
+
+            Assert.AreEqual(13, result);
+        }
+
         #endregion
 
         #region Mock
@@ -55,13 +78,20 @@ namespace ManiacClipboard.Model.Tests
 
             public MockClipboardData(object data, ClipboardDataType type, DateTime copyTime, ClipboardSource source) : base(data, type, copyTime, source) { }
 
-            public bool WasDisposed { get; private set; } = false;
+            public bool WasDisposed { get; private set; }
+
+            public bool EqualsReturnValue { get; set; }
+
+            public int GetHashCodeReturnValue { get; set; } = -1;
 
             public override void Dispose()
             {
                 WasDisposed = true;
             }
 
+            public override bool Equals(object obj) => EqualsReturnValue;
+
+            public override int GetHashCode() => GetHashCodeReturnValue;
         }
 
         #endregion
