@@ -5,7 +5,7 @@ namespace ManiacClipboard.Model
     /// <summary>
     /// Represents data that can be stored on the clipboard.
     /// </summary>
-    public abstract class ClipboardData : IDisposable
+    public abstract class ClipboardData : IClipboardData, IDisposable
     {
         #region Constructors
 
