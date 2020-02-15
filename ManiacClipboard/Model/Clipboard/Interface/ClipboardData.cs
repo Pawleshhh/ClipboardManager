@@ -27,6 +27,18 @@ namespace ManiacClipboard.Model
             DataType = type;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClipboardData"/> class.
+        /// </summary>
+        /// <param name="data">Data to be stored.</param>
+        /// <param name="type">Type of the data.</param>
+        /// <exception cref="ArgumentNullException">Throws when data is null.</exception>
+        /// <exception cref="ArgumentException">Throws when type is not defined.</exception>
+        protected ClipboardData(object data, ClipboardDataType type, DateTime copyTime) : this(data, type)
+        {
+            CopyTime = copyTime;
+        }
+
         #endregion
 
         #region Properties
@@ -40,6 +52,11 @@ namespace ManiacClipboard.Model
         /// Gets type of stored data.
         /// </summary>
         public ClipboardDataType DataType { get; }
+
+        /// <summary>
+        /// Gets date and time when data was stored.
+        /// </summary>
+        public DateTime CopyTime { get; } = DateTime.Now;
 
         #endregion
 

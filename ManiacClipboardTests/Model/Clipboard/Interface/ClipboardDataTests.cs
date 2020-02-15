@@ -31,6 +31,20 @@ namespace ManiacClipboard.Model.Tests
         }
 
         [TestMethod]
+        public void ThreeParametersConstructor_GivenDataIsNull_ThrowsArgumentNullException()
+        {
+            Assert.ThrowsException<ArgumentNullException>(
+                () => new MockClipboardData(null, ClipboardDataType.Audio, new DateTime()));
+        }
+
+        [TestMethod]
+        public void ThreeParametersConstructor_GivenTypeIsNotDefined_ThrowsArgumentException()
+        {
+            Assert.ThrowsException<ArgumentException>(
+                () => new MockClipboardData(new object(), (ClipboardDataType)int.MaxValue, new DateTime()));
+        }
+
+        [TestMethod]
         public void Dispose_InvokingDisposeMethod_DataIsDisposed()
         {
             var clipboardData = new MockClipboardData(new object(), ClipboardDataType.Unknown);
@@ -48,6 +62,8 @@ namespace ManiacClipboard.Model.Tests
         {
 
             public MockClipboardData(object data, ClipboardDataType type) : base(data, type) { }
+
+            public MockClipboardData(object data, ClipboardDataType type, DateTime copyTime) : base(data, type, copyTime) { }
 
             public bool WasDisposed { get; private set; } = false;
 
