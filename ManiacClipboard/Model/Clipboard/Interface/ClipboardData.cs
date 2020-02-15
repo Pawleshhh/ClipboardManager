@@ -5,7 +5,7 @@ namespace ManiacClipboard.Model
     /// <summary>
     /// Represents data that can be stored on the clipboard.
     /// </summary>
-    public abstract class ClipboardData : IClipboardData, IDisposable
+    public abstract class ClipboardData : IClipboardData
     {
         #region Constructors
 
@@ -74,7 +74,7 @@ namespace ManiacClipboard.Model
         /// <summary>
         /// Gets stored data.
         /// </summary>
-        public virtual object Data { get; }
+        public object Data { get; }
 
         /// <summary>
         /// Gets type of stored data.
@@ -124,7 +124,7 @@ namespace ManiacClipboard.Model
     /// Represents data that can be stored on the clipboard.
     /// </summary>
     /// <typeparam name="T">Type of stored data.</typeparam>
-    public abstract class ClipboardData<T> : ClipboardData
+    public abstract class ClipboardData<T> : ClipboardData, IClipboardData<T>
     {
         #region Constructors
 
@@ -137,7 +137,7 @@ namespace ManiacClipboard.Model
         /// <exception cref="ArgumentException">Throws when type is not defined.</exception>
         protected ClipboardData(T data, ClipboardDataType type) : base(data, type)
         {
-
+            Data = data;
         }
 
         /// <summary>
@@ -150,7 +150,7 @@ namespace ManiacClipboard.Model
         /// <exception cref="ArgumentException">Throws when type is not defined.</exception>
         protected ClipboardData(T data, ClipboardDataType type, DateTime copyTime) : base(data, type, copyTime)
         {
-
+            Data = data;
         }
 
         /// <summary>
@@ -163,7 +163,7 @@ namespace ManiacClipboard.Model
         /// <exception cref="ArgumentException">Throws when type is not defined.</exception>
         protected ClipboardData(T data, ClipboardDataType type, ClipboardSource source) : base(data, type, source)
         {
-
+            Data = data;
         }
 
         /// <summary>
@@ -177,12 +177,14 @@ namespace ManiacClipboard.Model
         /// <exception cref="ArgumentException">Throws when type is not defined.</exception>
         protected ClipboardData(T data, ClipboardDataType type, DateTime copyTime, ClipboardSource source) : base(data, type, copyTime, source)
         {
-
+            Data = data;
         }
 
         #endregion
 
         #region Properties
+
+        public new T Data { get; }
 
         #endregion
 
