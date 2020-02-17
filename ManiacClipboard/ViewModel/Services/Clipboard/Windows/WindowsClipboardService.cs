@@ -55,7 +55,7 @@ namespace ManiacClipboard.ViewModel
         /// <summary>
         /// <see cref="IClipboardService.AutoConvert"/>.
         /// </summary>
-        public bool AutoConvert { get; set; }
+        public bool AutoConvert { get; set; } = true;
 
         /// <summary>
         /// <see cref="IClipboardService.IsMonitoring"/>.
