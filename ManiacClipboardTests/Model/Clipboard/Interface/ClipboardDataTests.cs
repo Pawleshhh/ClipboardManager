@@ -20,7 +20,7 @@ namespace ManiacClipboard.Model.Tests
         public void Constructor_GivenDataIsNull_ThrowsArgumentNullException()
         {
             Assert.ThrowsException<ArgumentNullException>(
-                () => new MockClipboardData(null, ClipboardDataType.Audio));
+                () => new MockClipboardData(null, ClipboardDataType.Unknown));
         }
 
         [TestMethod]

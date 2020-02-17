@@ -26,9 +26,5 @@
         /// Image data.
         /// </summary>
         Image,
-        /// <summary>
-        /// Audio data.
-        /// </summary>
-        Audio
     }
 }
