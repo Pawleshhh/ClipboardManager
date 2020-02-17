@@ -1,15 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ManiacClipboard.Model;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ManiacClipboard.Model.Tests
 {
     [TestClass()]
     public class TextClipboardDataTests
     {
-
         [TestMethod]
         public void IEquatableEquals_CheckingEqualityWhenParameterIsNull_ReturnsFalse()
         {
@@ -88,6 +83,5 @@ namespace ManiacClipboard.Model.Tests
 
             Assert.AreEqual(expectedHashCode, result);
         }
-
     }
 }

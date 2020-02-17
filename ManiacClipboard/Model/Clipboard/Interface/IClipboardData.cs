@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ManiacClipboard.Model
 {
-
     /// <summary>
     /// Represents the interface of data that can be stored on the clipboard.
     /// </summary>
     public interface IClipboardData : IDisposable
     {
-
         /// <summary>
         /// Gets stored data.
         /// </summary>
@@ -40,16 +36,13 @@ namespace ManiacClipboard.Model
         /// Gets or sets whether the stored data is supposed to be kept or not.
         /// </summary>
         bool KeepThat { get; set; }
-
     }
 
     public interface IClipboardData<T> : IClipboardData
     {
-
         /// <summary>
         /// Gets stored data.
         /// </summary>
         new T Data { get; }
-
     }
 }

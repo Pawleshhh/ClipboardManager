@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace ManiacClipboard.Model
 {
-
     /// <summary>
     /// Represents multiple data that can be stored on the clipboard.
     /// </summary>
     public abstract class CollectionClipboardData<T> : ClipboardData<IReadOnlyCollection<T>>
     {
         #region Constructors
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ClipboardData"/> class.
         /// </summary>
@@ -57,7 +57,8 @@ namespace ManiacClipboard.Model
         protected CollectionClipboardData(IReadOnlyCollection<T> data, ClipboardDataType type, DateTime copyTime, ClipboardSource source) : base(data, type, copyTime, source)
         {
         }
-        #endregion
+
+        #endregion Constructors
 
         #region Public methods
 
@@ -94,6 +95,6 @@ namespace ManiacClipboard.Model
             return $"Collection of {typeof(T).Name}";
         }
 
-        #endregion
+        #endregion Public methods
     }
 }

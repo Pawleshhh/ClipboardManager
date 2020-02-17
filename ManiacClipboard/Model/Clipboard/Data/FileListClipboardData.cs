@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace ManiacClipboard.Model
 {
@@ -10,7 +9,6 @@ namespace ManiacClipboard.Model
     /// </summary>
     public class FileListClipboardData : CollectionClipboardData<KeyValuePair<string, bool>>
     {
-
         #region Constructors
 
         protected FileListClipboardData(IReadOnlyCollection<KeyValuePair<string, bool>> data, ClipboardDataType type) :
@@ -53,18 +51,18 @@ namespace ManiacClipboard.Model
         {
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Methods
 
         public override ClipboardData[] Split()
-            => Data.Select(n => new PathClipboardData(n.Key, n.Value, CopyTime, Source) { KeepThat = this.KeepThat}).ToArray();
+            => Data.Select(n => new PathClipboardData(n.Key, n.Value, CopyTime, Source) { KeepThat = this.KeepThat }).ToArray();
 
         public override string ToString()
         {
             return "Collection of paths";
         }
 
-        #endregion
+        #endregion Methods
     }
 }

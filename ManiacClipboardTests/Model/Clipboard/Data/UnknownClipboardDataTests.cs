@@ -1,15 +1,11 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ManiacClipboard.Model;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ManiacClipboard.Model.Tests
 {
     [TestClass()]
     public class UnknownClipboardDataTests
     {
-
         #region Tests
 
         [TestMethod]
@@ -99,18 +95,19 @@ namespace ManiacClipboard.Model.Tests
 
             Assert.IsTrue(data.WasDisposed);
         }
-        #endregion
+
+        #endregion Tests
 
         #region Helper methods
 
         private UnknownClipboardData GetUnknownClipboardDataAsInt(int value)
             => new UnknownClipboardData(value, new string[] { "number" });
 
-        #endregion
+        #endregion Helper methods
 
         #region Helper types
 
-        class FakeDisposableObject : IDisposable
+        private class FakeDisposableObject : IDisposable
         {
             public bool WasDisposed { get; private set; }
 
@@ -119,6 +116,7 @@ namespace ManiacClipboard.Model.Tests
                 WasDisposed = true;
             }
         }
-        #endregion
+
+        #endregion Helper types
     }
 }

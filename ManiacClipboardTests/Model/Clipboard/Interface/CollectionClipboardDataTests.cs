@@ -1,20 +1,15 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ManiacClipboard.Model;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Linq;
 
 namespace ManiacClipboard.Model.Tests
 {
-
     /// <summary>
     /// Unit tests of the <see cref="CollectionClipboardData{T}"/> class.
     /// </summary>
     [TestClass()]
     public class CollectionClipboardDataTests
     {
-
         #region Unit tests
 
         [TestMethod]
@@ -63,11 +58,11 @@ namespace ManiacClipboard.Model.Tests
             Assert.IsFalse(result);
         }
 
-        #endregion
+        #endregion Unit tests
 
         #region Mock
 
-        class MockCollectionClipboardData : CollectionClipboardData<int>
+        private class MockCollectionClipboardData : CollectionClipboardData<int>
         {
             #region Constructors
 
@@ -87,17 +82,15 @@ namespace ManiacClipboard.Model.Tests
             {
             }
 
-            #endregion
+            #endregion Constructors
 
             #region Public methods
 
             public override ClipboardData[] Split() => new ClipboardData[Data.Count];
 
-            #endregion
-
+            #endregion Public methods
         }
 
-        #endregion
-
+        #endregion Mock
     }
 }

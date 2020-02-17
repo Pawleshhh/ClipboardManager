@@ -9,7 +9,6 @@ namespace ManiacClipboard.Model
     /// </summary>
     public class ImageClipboardData : ClipboardData<MemoryStream>, IEquatable<ImageClipboardData>
     {
-
         #region Constructors
 
         protected ImageClipboardData(MemoryStream data, ClipboardDataType type) : base(data, type)
@@ -44,7 +43,7 @@ namespace ManiacClipboard.Model
         {
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Private fields
 
@@ -54,7 +53,7 @@ namespace ManiacClipboard.Model
 
         private bool _hashCodeCalculated;
 
-        #endregion
+        #endregion Private fields
 
         #region Public methods
 
@@ -79,7 +78,7 @@ namespace ManiacClipboard.Model
 
         public override int GetHashCode()
         {
-            if(!_hashCodeCalculated)
+            if (!_hashCodeCalculated)
             {
                 string bStr = Convert.ToBase64String(Data.ToArray());
                 _hashCode = bStr.GetHashCode() * 27;
@@ -104,7 +103,6 @@ namespace ManiacClipboard.Model
             Dispose();
         }
 
-        #endregion
-
+        #endregion Public methods
     }
 }

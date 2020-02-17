@@ -2,13 +2,11 @@
 
 namespace ManiacClipboard.Model
 {
-
     /// <summary>
     /// Represents data that can be stored on the clipboard and its type is unknown.
     /// </summary>
     public sealed class UnknownClipboardData : ClipboardData<object>
     {
-
         #region Constructors
 
         public UnknownClipboardData(object data, string[] formats) : base(data, ClipboardDataType.Unknown)
@@ -40,7 +38,7 @@ namespace ManiacClipboard.Model
                 GC.SuppressFinalize(this);
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Private fields
 
@@ -52,7 +50,7 @@ namespace ManiacClipboard.Model
 
         private bool _isDisposable;
 
-        #endregion
+        #endregion Private fields
 
         #region Methods
 
@@ -94,7 +92,7 @@ namespace ManiacClipboard.Model
 
         public override void Dispose()
         {
-            if(_isDisposable && !_isDisposed)
+            if (_isDisposable && !_isDisposed)
             {
                 ((IDisposable)Data).Dispose();
                 _isDisposed = true;
@@ -107,7 +105,6 @@ namespace ManiacClipboard.Model
             Dispose();
         }
 
-        #endregion
-
+        #endregion Methods
     }
 }

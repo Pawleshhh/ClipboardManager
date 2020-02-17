@@ -1,8 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ManiacClipboard.Model;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
 
 namespace ManiacClipboard.Model.Tests
@@ -10,7 +6,6 @@ namespace ManiacClipboard.Model.Tests
     [TestClass()]
     public class ImageClipboardDataTests
     {
-
         [TestMethod]
         public void Eqauls_CheckingEqualityWhenParameterIsNull_ReturnsFalse()
         {
@@ -87,7 +82,7 @@ namespace ManiacClipboard.Model.Tests
         [TestMethod]
         public void OverriddenEquals_CheckingEqualityWhenParameterIsNull_ReturnsFalse()
         {
-            using(MemoryStream ms = new MemoryStream(new byte[] { 1, 1, 1 }))
+            using (MemoryStream ms = new MemoryStream(new byte[] { 1, 1, 1 }))
             {
                 var clipboardData = new ImageClipboardData(ms);
                 object obj = null;
@@ -101,7 +96,7 @@ namespace ManiacClipboard.Model.Tests
         [TestMethod]
         public void OverriddenEquals_CheckingEqualityWhenObjectsAreTheSame_ReturnsTrue()
         {
-            using(MemoryStream ms = new MemoryStream())
+            using (MemoryStream ms = new MemoryStream())
             {
                 var clipboardData1 = new ImageClipboardData(ms);
                 object clipboardData2 = clipboardData1;
@@ -115,7 +110,7 @@ namespace ManiacClipboard.Model.Tests
         [TestMethod]
         public void OverriddenEquals_CheckingEqualityWhenObjectsAreNotTheSameType_ReturnsFalse()
         {
-            using(MemoryStream ms = new MemoryStream())
+            using (MemoryStream ms = new MemoryStream())
             {
                 var clipboardData = new ImageClipboardData(ms);
                 object obj = new object();
@@ -155,6 +150,5 @@ namespace ManiacClipboard.Model.Tests
                 Assert.IsFalse(result);
             }
         }
-
     }
 }

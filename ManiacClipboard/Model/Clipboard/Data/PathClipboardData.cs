@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ManiacClipboard.Model
 {
-
     /// <summary>
     /// Represents data with file path that can be stored on the clipboard.
     /// </summary>
@@ -51,13 +48,12 @@ namespace ManiacClipboard.Model
         {
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Properties
 
         public bool IsDirectory { get; }
 
-        #endregion
-
+        #endregion Properties
     }
 }

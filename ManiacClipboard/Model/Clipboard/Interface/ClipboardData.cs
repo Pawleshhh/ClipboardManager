@@ -67,7 +67,7 @@ namespace ManiacClipboard.Model
             Source = source;
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Properties
 
@@ -101,7 +101,7 @@ namespace ManiacClipboard.Model
         /// </summary>
         public bool KeepThat { get; set; }
 
-        #endregion
+        #endregion Properties
 
         #region Public methods
 
@@ -116,8 +116,7 @@ namespace ManiacClipboard.Model
         /// </summary>
         public virtual void Dispose() { }
 
-        #endregion
-
+        #endregion Public methods
     }
 
     /// <summary>
@@ -180,14 +179,12 @@ namespace ManiacClipboard.Model
             Data = data;
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Properties
 
         public new T Data { get; }
 
-        #endregion
-
+        #endregion Properties
     }
-
 }

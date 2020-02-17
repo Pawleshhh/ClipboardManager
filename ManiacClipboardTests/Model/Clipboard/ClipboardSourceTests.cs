@@ -3,14 +3,12 @@ using System;
 
 namespace ManiacClipboard.Model.Tests
 {
-
     /// <summary>
     /// Unit tests of the <see cref="ClipboardSource"/> class.
     /// </summary>
     [TestClass()]
     public class ClipboardSourceTests
     {
-
         [DataTestMethod]
         [DataRow("")]
         [DataRow(null)]

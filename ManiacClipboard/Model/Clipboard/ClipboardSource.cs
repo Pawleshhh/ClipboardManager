@@ -1,9 +1,7 @@
-﻿
-using System;
+﻿using System;
 
 namespace ManiacClipboard.Model
 {
-
     /// <summary>
     /// Contains information about the source of stored data from the clipboard.
     /// </summary>
@@ -34,7 +32,7 @@ namespace ManiacClipboard.Model
             IconPath = iconPath;
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Properties
 
@@ -48,7 +46,7 @@ namespace ManiacClipboard.Model
         /// </summary>
         public string IconPath { get; }
 
-        #endregion
+        #endregion Properties
 
         #region Methods
 
@@ -73,7 +71,6 @@ namespace ManiacClipboard.Model
 
         public override string ToString() => AppName;
 
-        #endregion
-
+        #endregion Methods
     }
 }

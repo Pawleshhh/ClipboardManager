@@ -1,19 +1,14 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ManiacClipboard.Model;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ManiacClipboard.Model.Tests
 {
-
     /// <summary>
     /// Unit tests of the <see cref="Model.ClipboardData"/> class.
     /// </summary>
     [TestClass()]
     public class ClipboardDataTests
     {
-
         #region Tests
 
         [TestMethod]
@@ -56,27 +51,34 @@ namespace ManiacClipboard.Model.Tests
         public void GetHashCode_GetHashCodeReturnsExpectedValue()
         {
             var clipboardData = new MockClipboardData("data", ClipboardDataType.Text)
-                { GetHashCodeReturnValue = 13 };
+            { GetHashCodeReturnValue = 13 };
 
             int result = clipboardData.GetHashCode();
 
             Assert.AreEqual(13, result);
         }
 
-        #endregion
+        #endregion Tests
 
         #region Mock
 
-        class MockClipboardData : ClipboardData
+        private class MockClipboardData : ClipboardData
         {
+            public MockClipboardData(object data, ClipboardDataType type) : base(data, type)
+            {
+            }
 
-            public MockClipboardData(object data, ClipboardDataType type) : base(data, type) { }
+            public MockClipboardData(object data, ClipboardDataType type, DateTime copyTime) : base(data, type, copyTime)
+            {
+            }
 
-            public MockClipboardData(object data, ClipboardDataType type, DateTime copyTime) : base(data, type, copyTime) { }
+            public MockClipboardData(object data, ClipboardDataType type, ClipboardSource source) : base(data, type, source)
+            {
+            }
 
-            public MockClipboardData(object data, ClipboardDataType type, ClipboardSource source) : base(data, type, source) { }
-
-            public MockClipboardData(object data, ClipboardDataType type, DateTime copyTime, ClipboardSource source) : base(data, type, copyTime, source) { }
+            public MockClipboardData(object data, ClipboardDataType type, DateTime copyTime, ClipboardSource source) : base(data, type, copyTime, source)
+            {
+            }
 
             public bool WasDisposed { get; private set; }
 
@@ -94,7 +96,6 @@ namespace ManiacClipboard.Model.Tests
             public override int GetHashCode() => GetHashCodeReturnValue;
         }
 
-        #endregion
-
+        #endregion Mock
     }
 }
