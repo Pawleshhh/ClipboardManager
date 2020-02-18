@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ManiacClipboard.ViewModel
@@ -50,6 +51,8 @@ namespace ManiacClipboard.ViewModel
             }
         }
 
+        public int Count => _mainCollection.Count;
+
         /// <summary>
         /// Gets or sets flags that indicate what type of clipboard data is shown.
         /// </summary>
@@ -59,8 +62,6 @@ namespace ManiacClipboard.ViewModel
             private set
             {
                 SetProperty(() => _showTypeOfClipboardData == value, () => _showTypeOfClipboardData = value);
-
-
             }
         }
 
@@ -73,8 +74,6 @@ namespace ManiacClipboard.ViewModel
             private set
             {
                 SetProperty(() => _storeTypeOfClipboardData == value, () => _storeTypeOfClipboardData = value);
-
-
             }
         }
 
@@ -113,10 +112,6 @@ namespace ManiacClipboard.ViewModel
 
         public void AddRange(IEnumerable<ClipboardDataViewModel> collection)
         {
-            WaitForTaskCollection();
-
-            IsCollectionBusy = true;
-
             WorkOnCollection(() =>
             {
                 foreach(var item in collection)
@@ -134,10 +129,6 @@ namespace ManiacClipboard.ViewModel
 
         public void RemoveRange(IEnumerable<ClipboardDataViewModel> collection)
         {
-            WaitForTaskCollection();
-
-            IsCollectionBusy = true;
-
             WorkOnCollection(() =>
             {
                 foreach (var item in collection)
@@ -161,25 +152,46 @@ namespace ManiacClipboard.ViewModel
         public void AddShowFilter(ClipboardCollectionFilters filter)
         {
             if (filter == ClipboardCollectionFilters.None)
-                ShowTypeOfClipboardData &= filter;
+            {
+                ShowTypeOfClipboardData &= ClipboardCollectionFilters.None;
+
+                WaitForTaskCollection();
+                _observableCollection.Clear();
+            }
             else
+            {
                 ShowTypeOfClipboardData |= filter;
+                UpdateCollectionByShowFilter();
+            }
         }
 
         public void RemoveShowFilter(ClipboardCollectionFilters filter)
         {
             if (filter == ClipboardCollectionFilters.All)
+            {
                 ShowTypeOfClipboardData &= ClipboardCollectionFilters.None;
-            else if (filter == ClipboardCollectionFilters.None && HasShowFilter(ClipboardCollectionFilters.None))
-                ShowTypeOfClipboardData |= ClipboardCollectionFilters.All;
-            else if (HasShowFilter(filter))
-                ShowTypeOfClipboardData ^= filter;
+
+                WaitForTaskCollection();
+                _observableCollection.Clear();
+            }
+            else
+            {
+                if (filter == ClipboardCollectionFilters.None && HasShowFilter(ClipboardCollectionFilters.None))
+                    ShowTypeOfClipboardData |= ClipboardCollectionFilters.All;
+                else if (HasShowFilter(filter))
+                    ShowTypeOfClipboardData ^= filter;
+
+                UpdateCollectionByShowFilter();
+            }
         }
 
         public void AddStoreFilter(ClipboardCollectionFilters filter)
         {
             if (filter == ClipboardCollectionFilters.None)
-                StoreTypeOfClipboardData &= filter;
+            {
+                StoreTypeOfClipboardData &= ClipboardCollectionFilters.None;
+                Clear();
+            }
             else
                 StoreTypeOfClipboardData |= filter;
         }
@@ -187,11 +199,19 @@ namespace ManiacClipboard.ViewModel
         public void RemoveStoreFilter(ClipboardCollectionFilters filter)
         {
             if (filter == ClipboardCollectionFilters.All)
+            {
                 StoreTypeOfClipboardData &= ClipboardCollectionFilters.None;
-            else if (filter == ClipboardCollectionFilters.None && HasStoreFilter(ClipboardCollectionFilters.None))
-                StoreTypeOfClipboardData |= ClipboardCollectionFilters.All;
-            else if (HasStoreFilter(filter))
-                StoreTypeOfClipboardData ^= filter;
+                Clear();
+            }
+            else
+            {
+                if (filter == ClipboardCollectionFilters.None && HasStoreFilter(ClipboardCollectionFilters.None))
+                    StoreTypeOfClipboardData |= ClipboardCollectionFilters.All;
+                else if (HasStoreFilter(filter))
+                    StoreTypeOfClipboardData ^= filter;
+
+                UpdateCollectionByStoreFilter();
+            }
         }
 
         public bool HasShowFilter(ClipboardCollectionFilters filter)
@@ -240,6 +260,48 @@ namespace ManiacClipboard.ViewModel
         #endregion
 
         #region Private methods
+
+        private void UpdateCollectionByShowFilter()
+        {
+            WorkOnCollection(() =>
+            {
+                _observableCollection.Clear();
+                foreach(var item in _mainCollection)
+                {
+                    if (!IsAbleToBeShown(item))
+                    {
+                        _observableCollection.Remove(item);
+                    }
+                    else
+                    {
+                        _observableCollection.Add(item);
+                    }
+                }
+
+                return new ReadOnlyObservableCollection<ClipboardDataViewModel>(_observableCollection);
+            });
+        }
+
+        private void UpdateCollectionByStoreFilter()
+        {
+            WorkOnCollection(() =>
+            {
+                _mainCollection.RemoveWhere(n =>
+                {
+                    if (!IsAbleToBeStored(n))
+                    {
+                        if (IsAbleToBeShown(n))
+                            _observableCollection.Remove(n);
+
+                        return true;
+                    }
+
+                    return false;
+                });
+
+                return new ReadOnlyObservableCollection<ClipboardDataViewModel>(_observableCollection);
+            });
+        }
 
         private void WaitForTaskCollection()
             => TaskCollection.Task.Wait();

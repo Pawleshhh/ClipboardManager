@@ -329,6 +329,7 @@ namespace ManiacClipboard.ViewModel.Tests
                 new UnknownClipboardDataViewModel(new UnknownClipboardData(10, new string[] {"number"}))
             };
             collectionVM.AddRange(arrayOfItems);
+            collectionVM.TaskCollection.Task.Wait();
 
             collectionVM.RemoveRange(arrayOfItems);
             collectionVM.TaskCollection.Task.Wait();
@@ -353,6 +354,7 @@ namespace ManiacClipboard.ViewModel.Tests
                 new UnknownClipboardDataViewModel(new UnknownClipboardData(10, new string[] {"number"}))
             };
             collectionVM.AddRange(arrayOfItems);
+            collectionVM.TaskCollection.Task.Wait();
 
             collectionVM.RemoveRange(duplicates);
             collectionVM.TaskCollection.Task.Wait();
@@ -371,11 +373,164 @@ namespace ManiacClipboard.ViewModel.Tests
                 new UnknownClipboardDataViewModel(new UnknownClipboardData(10, new string[] {"number"}))
             };
             collectionVM.AddRange(arrayOfItems);
+            collectionVM.TaskCollection.Task.Wait();
 
             collectionVM.Clear();
 
             CollectionAssert.AreNotEquivalent(arrayOfItems, GetMainCollection(collectionVM).ToArray());
             CollectionAssert.AreNotEquivalent(arrayOfItems, collectionVM.TaskCollection.Result);
+        }
+
+        [TestMethod]
+        public void AddShowFilter_AddsNoneFilter_ObservableCollectionIsEmpty()
+        {
+            var collectionVM = GetCollectionVM();
+            ClipboardDataViewModel[] arrayOfItems = new ClipboardDataViewModel[]
+            {
+                new TextClipboardDataViewModel(new TextClipboardData("text")),
+                new TextClipboardDataViewModel(new TextClipboardData("text2")),
+                new PathClipboardDataViewModel(new PathClipboardData("path", true)),
+                new UnknownClipboardDataViewModel(new UnknownClipboardData(10, new string[] {"number"}))
+            };
+            collectionVM.AddRange(arrayOfItems);
+            collectionVM.TaskCollection.Task.Wait();
+
+            collectionVM.AddShowFilter(ClipboardCollectionFilters.None);
+
+            Assert.AreEqual(0, collectionVM.TaskCollection.Result.Count);
+        }
+
+        [TestMethod]
+        public void AddShowFilter_AddsTextFilter_ObservableCollectionHasOnlyTextData()
+        {
+            var collectionVM = GetCollectionVM();
+            var expectedItems = new ClipboardDataViewModel[]
+            {
+                new TextClipboardDataViewModel(new TextClipboardData("text")),
+                new TextClipboardDataViewModel(new TextClipboardData("text2")),
+            };
+            var arrayOfItems = new ClipboardDataViewModel[]
+            {
+                expectedItems[0], expectedItems[1],
+                new PathClipboardDataViewModel(new PathClipboardData("path", true)),
+                new UnknownClipboardDataViewModel(new UnknownClipboardData(10, new string[] {"number"}))
+            };
+            collectionVM.AddRange(arrayOfItems);
+            collectionVM.TaskCollection.Task.Wait();
+            collectionVM.RemoveShowFilter(ClipboardCollectionFilters.All);
+
+            collectionVM.AddShowFilter(ClipboardCollectionFilters.Text);
+            collectionVM.TaskCollection.Task.Wait();
+
+            CollectionAssert.AreEquivalent(expectedItems, collectionVM.TaskCollection.Result);
+        }
+
+        [TestMethod]
+        public void RemoveShowFilter_RemovesAllFilter_ObservableCollectionIsEmpty()
+        {
+            var collectionVM = GetCollectionVM();
+            ClipboardDataViewModel[] arrayOfItems = new ClipboardDataViewModel[]
+            {
+                new TextClipboardDataViewModel(new TextClipboardData("text")),
+                new TextClipboardDataViewModel(new TextClipboardData("text2")),
+                new PathClipboardDataViewModel(new PathClipboardData("path", true)),
+                new UnknownClipboardDataViewModel(new UnknownClipboardData(10, new string[] {"number"}))
+            };
+            collectionVM.AddRange(arrayOfItems);
+            collectionVM.TaskCollection.Task.Wait();
+
+            collectionVM.RemoveShowFilter(ClipboardCollectionFilters.All);
+
+            Assert.AreEqual(0, collectionVM.TaskCollection.Result.Count);
+        }
+
+        [TestMethod]
+        public void RemoveShowFilter_RemovesTextFilter_ObservableCollectionDoesNotHaveTextData()
+        {
+            var collectionVM = GetCollectionVM();
+            var expectedItems = new ClipboardDataViewModel[]
+            {
+                new PathClipboardDataViewModel(new PathClipboardData("path", true)),
+                new UnknownClipboardDataViewModel(new UnknownClipboardData(10, new string[] {"number"}))
+            };
+            var arrayOfItems = new ClipboardDataViewModel[]
+            {
+                expectedItems[0], expectedItems[1],
+                new TextClipboardDataViewModel(new TextClipboardData("text")),
+                new TextClipboardDataViewModel(new TextClipboardData("text2")),
+            };
+            collectionVM.AddRange(arrayOfItems);
+            collectionVM.TaskCollection.Task.Wait();
+
+            collectionVM.RemoveShowFilter(ClipboardCollectionFilters.Text);
+            collectionVM.TaskCollection.Task.Wait();
+
+            CollectionAssert.AreEquivalent(expectedItems, collectionVM.TaskCollection.Result);
+        }
+
+        [TestMethod]
+        public void AddStoreFilter_AddsNoneFilter_BothCollectionsAreEmpty()
+        {
+            var collectionVM = GetCollectionVM();
+            ClipboardDataViewModel[] arrayOfItems = new ClipboardDataViewModel[]
+            {
+                new TextClipboardDataViewModel(new TextClipboardData("text")),
+                new TextClipboardDataViewModel(new TextClipboardData("text2")),
+                new PathClipboardDataViewModel(new PathClipboardData("path", true)),
+                new UnknownClipboardDataViewModel(new UnknownClipboardData(10, new string[] {"number"}))
+            };
+            collectionVM.AddRange(arrayOfItems);
+            collectionVM.TaskCollection.Task.Wait();
+
+            collectionVM.AddStoreFilter(ClipboardCollectionFilters.None);
+
+            Assert.AreEqual(0, collectionVM.Count);
+            Assert.AreEqual(0, collectionVM.TaskCollection.Result.Count);
+        }
+
+        [TestMethod]
+        public void RemoveStoreFilter_RemovesAllFilter_BothCollectionsAreEmpty()
+        {
+            var collectionVM = GetCollectionVM();
+            ClipboardDataViewModel[] arrayOfItems = new ClipboardDataViewModel[]
+            {
+                new TextClipboardDataViewModel(new TextClipboardData("text")),
+                new TextClipboardDataViewModel(new TextClipboardData("text2")),
+                new PathClipboardDataViewModel(new PathClipboardData("path", true)),
+                new UnknownClipboardDataViewModel(new UnknownClipboardData(10, new string[] {"number"}))
+            };
+            collectionVM.AddRange(arrayOfItems);
+            collectionVM.TaskCollection.Task.Wait();
+
+            collectionVM.RemoveStoreFilter(ClipboardCollectionFilters.All);
+
+            Assert.AreEqual(0, collectionVM.Count);
+            Assert.AreEqual(0, collectionVM.TaskCollection.Result.Count);
+        }
+
+        [TestMethod]
+        public void RemoveStoreFilter_RemovesTextFilter_BothCollectionsDoNotHaveTextData()
+        {
+            var collectionVM = GetCollectionVM();
+            var expectedItems = new ClipboardDataViewModel[]
+            {
+                new PathClipboardDataViewModel(new PathClipboardData("path", true)),
+                new UnknownClipboardDataViewModel(new UnknownClipboardData(10, new string[] {"number"}))
+            };
+            var arrayOfItems = new ClipboardDataViewModel[]
+            {
+                expectedItems[0], expectedItems[1],
+                new TextClipboardDataViewModel(new TextClipboardData("text")),
+                new TextClipboardDataViewModel(new TextClipboardData("text2")),
+            };
+            collectionVM.AddRange(arrayOfItems);
+            collectionVM.TaskCollection.Task.Wait();
+
+            collectionVM.RemoveStoreFilter(ClipboardCollectionFilters.Text);
+            collectionVM.TaskCollection.Task.Wait();
+
+            CollectionAssert.AreEquivalent(expectedItems, GetMainCollection(collectionVM).ToArray());
+            CollectionAssert.AreEquivalent(expectedItems, collectionVM.TaskCollection.Result);
         }
 
         #endregion
