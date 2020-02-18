@@ -11,7 +11,7 @@ namespace ManiacClipboard.ViewModel
 
         #region Constructors
 
-        protected FileListClipboardDataViewModel(FileListClipboardData clipboardData) : base(clipboardData)
+        public FileListClipboardDataViewModel(FileListClipboardData clipboardData) : base(clipboardData)
         {
         }
 

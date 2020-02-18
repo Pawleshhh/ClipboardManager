@@ -51,7 +51,18 @@ namespace ManiacClipboard.ViewModel
         #region Public methods
 
         public override bool Equals(object obj)
-            => _clipboardData.Equals(obj);
+        {
+            if (obj == null)
+                return false;
+
+            if (ReferenceEquals(this, obj))
+                return true;
+
+            if(obj is ClipboardDataViewModel data)
+                return _clipboardData.Equals(data._clipboardData);
+
+            return false;
+        }
 
         public override int GetHashCode()
             => _clipboardData.GetHashCode();

@@ -172,7 +172,7 @@ namespace ManiacClipboard.ViewModel
                 ShowTypeOfClipboardData &= ClipboardCollectionFilters.None;
             else if (filter == ClipboardCollectionFilters.None && HasShowFilter(ClipboardCollectionFilters.None))
                 ShowTypeOfClipboardData |= ClipboardCollectionFilters.All;
-            else
+            else if (HasShowFilter(filter))
                 ShowTypeOfClipboardData ^= filter;
         }
 
@@ -190,7 +190,7 @@ namespace ManiacClipboard.ViewModel
                 StoreTypeOfClipboardData &= ClipboardCollectionFilters.None;
             else if (filter == ClipboardCollectionFilters.None && HasStoreFilter(ClipboardCollectionFilters.None))
                 StoreTypeOfClipboardData |= ClipboardCollectionFilters.All;
-            else
+            else if (HasStoreFilter(filter))
                 StoreTypeOfClipboardData ^= filter;
         }
 
