@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -18,13 +17,21 @@ namespace ManiacClipboard.ViewModel
             TaskCollection = new NotifyTaskCompletion<ReadOnlyObservableCollection<ClipboardDataViewModel>>(
                 Task.FromResult(new ReadOnlyObservableCollection<ClipboardDataViewModel>(_observableCollection)));
         }
+
+        public ClipboardCollectionViewModel(int limit) : this()
+        {
+            if (limit < 1)
+                throw new ArgumentException("limit cannot be less than 1.");
+
+            _limit = limit;
+        }
         #endregion
 
         #region Private fields
 
-        private int _limit;
+        private int _limit = 100;
 
-        private bool _alwaysFitToLimit;
+        private bool _alwaysFitToLimit = true;
 
         private bool _isAscendingOrder;
 
@@ -64,9 +71,13 @@ namespace ManiacClipboard.ViewModel
             get => _limit;
             set
             {
+                if (value < 1)
+                    throw new ArgumentException("Limit cannot be less than 1.");
+
                 SetProperty(() => _limit == value, () => _limit = value);
 
-                FitToLimit();
+                if(AlwaysFitToLimit)
+                    FitToLimit();
             }
         }
 
@@ -132,6 +143,8 @@ namespace ManiacClipboard.ViewModel
                 if (IsAbleToBeShown(data))
                     AddSorted(data);
 
+                if(AlwaysFitToLimit)
+                    FitToLimit();
                 return true;
             }
 
@@ -146,6 +159,8 @@ namespace ManiacClipboard.ViewModel
             {
                 _observableCollection.Remove(data);
 
+                if(AlwaysFitToLimit)
+                    FitToLimit();
                 return true;
             }
 
@@ -165,6 +180,8 @@ namespace ManiacClipboard.ViewModel
                     }
                 }
 
+                if(AlwaysFitToLimit)
+                    _FitToLimit();
                 return new ReadOnlyObservableCollection<ClipboardDataViewModel>(_observableCollection);
             });
         }
@@ -179,6 +196,8 @@ namespace ManiacClipboard.ViewModel
                         _observableCollection.Remove(item);
                 }
 
+                if (AlwaysFitToLimit)
+                    _FitToLimit();
                 return new ReadOnlyObservableCollection<ClipboardDataViewModel>(_observableCollection);
             });
         }
@@ -299,12 +318,50 @@ namespace ManiacClipboard.ViewModel
             }
         }
 
+        public void FitToLimit()
+        {
+            WaitForTaskCollection();
+
+            int reqSpace = _observableCollection.Count - Limit;
+
+            if (reqSpace <= 0)
+                return;
+
+            WorkOnCollection(() =>
+            {
+                _FitToLimit();
+
+                return new ReadOnlyObservableCollection<ClipboardDataViewModel>(_observableCollection);
+            });
+        }
+
         #endregion
 
         #region Private methods
 
-        private void FitToLimit()
+        private void _FitToLimit()
         {
+            int reqSpace = _observableCollection.Count - Limit;
+
+            if (reqSpace <= 0)
+                return;
+
+            List<ClipboardDataViewModel> itemsToRemove = new List<ClipboardDataViewModel>();
+
+            foreach (var item in _mainCollection.OrderBy(n => n.CopyTime))
+            {
+                if (!item.KeepThat)
+                    itemsToRemove.Add(item);
+
+                if (itemsToRemove.Count == reqSpace)
+                    break;
+            }
+
+            foreach (var item in itemsToRemove)
+            {
+                _mainCollection.Remove(item);
+                _observableCollection.Remove(item);
+            }
 
         }
 
@@ -366,6 +423,8 @@ namespace ManiacClipboard.ViewModel
                     }
                 }
 
+                if (AlwaysFitToLimit)
+                    _FitToLimit();
                 return new ReadOnlyObservableCollection<ClipboardDataViewModel>(_observableCollection);
             });
         }
@@ -387,6 +446,8 @@ namespace ManiacClipboard.ViewModel
                     return false;
                 });
 
+                if (AlwaysFitToLimit)
+                    _FitToLimit();
                 return new ReadOnlyObservableCollection<ClipboardDataViewModel>(_observableCollection);
             });
         }

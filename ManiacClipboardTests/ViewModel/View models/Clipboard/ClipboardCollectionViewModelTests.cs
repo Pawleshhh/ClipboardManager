@@ -640,7 +640,6 @@ namespace ManiacClipboard.ViewModel.Tests
             ClipboardDataViewModel item3 = new TextClipboardDataViewModel(new TextClipboardData("data3", new DateTime(2020, 1, 5)));
             ClipboardDataViewModel item4 = new TextClipboardDataViewModel(new TextClipboardData("data4", new DateTime(2020, 1, 4)));
             var expectedCollection = new ClipboardDataViewModel[] { item3, item4, item1, item2 };
-
             collectionVM.AddRange(new ClipboardDataViewModel[] { item1, item2, item3, item4 });
             collectionVM.TaskCollection.Task.Wait();
 
@@ -648,6 +647,103 @@ namespace ManiacClipboard.ViewModel.Tests
             collectionVM.TaskCollection.Task.Wait();
 
             CollectionAssert.AreEqual(expectedCollection, collectionVM.TaskCollection.Result);
+        }
+
+        [TestMethod]
+        public void FitToLimit_TryingToFitToTheLimitButItIsNotNeeded_CollectionDoesNotChange()
+        {
+            var collectionVM = GetCollectionVM();
+            collectionVM.AlwaysFitToLimit = false;
+            ClipboardDataViewModel[] arrayOfItems = new ClipboardDataViewModel[]
+            {
+                new TextClipboardDataViewModel(new TextClipboardData("text")),
+                new TextClipboardDataViewModel(new TextClipboardData("text2")),
+                new PathClipboardDataViewModel(new PathClipboardData("path", true)),
+                new UnknownClipboardDataViewModel(new UnknownClipboardData(10, new string[] {"number"}))
+            };
+            collectionVM.AddRange(arrayOfItems);
+            collectionVM.TaskCollection.Task.Wait();
+
+            collectionVM.FitToLimit();
+            collectionVM.TaskCollection.Task.Wait();
+
+            CollectionAssert.AreEquivalent(arrayOfItems, collectionVM.TaskCollection.Result);
+        }
+
+        [TestMethod]
+        public void FitToLimit_FitsToLimitWhenAllDataKeepThatIsFalse_CollectionChanges()
+        {
+            var collectionVM = GetCollectionVM();
+            collectionVM.AlwaysFitToLimit = false;
+            ClipboardDataViewModel[] arrayOfItems = new ClipboardDataViewModel[]
+            {
+                new TextClipboardDataViewModel(new TextClipboardData("text", new DateTime(2020, 1, 1))),
+                new TextClipboardDataViewModel(new TextClipboardData("text2", new DateTime(2020, 1, 2))),
+                new PathClipboardDataViewModel(new PathClipboardData("path", true, new DateTime(2020, 1, 3))),
+                new UnknownClipboardDataViewModel(new UnknownClipboardData(10, new string[] {"number"}, new DateTime(2020, 1, 4)))
+            };
+            collectionVM.AddRange(arrayOfItems);
+            collectionVM.TaskCollection.Task.Wait();
+            collectionVM.Limit = 2;
+
+            collectionVM.FitToLimit();
+            collectionVM.TaskCollection.Task.Wait();
+
+            CollectionAssert.AreEquivalent(new ClipboardDataViewModel[] { arrayOfItems[2], arrayOfItems[3] },
+                collectionVM.TaskCollection.Result);
+        }
+
+        [TestMethod]
+        public void FitToLimit_FitsToLimitWhenAllKeepThatIsTrue_CollectionDoesNotChange()
+        {
+            var collectionVM = GetCollectionVM();
+            collectionVM.AlwaysFitToLimit = false;
+            ClipboardDataViewModel[] arrayOfItems = new ClipboardDataViewModel[]
+            {
+                new TextClipboardDataViewModel(new TextClipboardData("text", new DateTime(2020, 1, 1))) { KeepThat = true },
+                new TextClipboardDataViewModel(new TextClipboardData("text2", new DateTime(2020, 1, 2))) { KeepThat = true },
+                new PathClipboardDataViewModel(new PathClipboardData("path", true, new DateTime(2020, 1, 3))) { KeepThat = true },
+                new UnknownClipboardDataViewModel(new UnknownClipboardData(10, new string[] {"number"}, new DateTime(2020, 1, 4))) { KeepThat = true }
+            };
+            collectionVM.AddRange(arrayOfItems);
+            collectionVM.TaskCollection.Task.Wait();
+            collectionVM.Limit = 1;
+
+            collectionVM.FitToLimit();
+            collectionVM.TaskCollection.Task.Wait();
+
+            CollectionAssert.AreEquivalent(arrayOfItems, collectionVM.TaskCollection.Result);
+        }
+
+        [TestMethod]
+        public void FitToLimit_FitsToLimitWhenHalfDataKeepThatIsTrue_CollectionContainsItemsWithKeepThatAsTrue()
+        {
+            var collectionVM = GetCollectionVM();
+            collectionVM.AlwaysFitToLimit = false;
+            ClipboardDataViewModel[] arrayOfItems = new ClipboardDataViewModel[]
+            {
+                new TextClipboardDataViewModel(new TextClipboardData("text", new DateTime(2020, 1, 1))) { KeepThat = true },
+                new TextClipboardDataViewModel(new TextClipboardData("text2", new DateTime(2020, 1, 2))) { KeepThat = true },
+                new PathClipboardDataViewModel(new PathClipboardData("path", true, new DateTime(2020, 1, 3))),
+                new UnknownClipboardDataViewModel(new UnknownClipboardData(10, new string[] {"number"}, new DateTime(2020, 1, 4)))
+            };
+            collectionVM.AddRange(arrayOfItems);
+            collectionVM.TaskCollection.Task.Wait();
+            collectionVM.Limit = 2;
+
+            collectionVM.FitToLimit();
+            collectionVM.TaskCollection.Task.Wait();
+
+            CollectionAssert.AreEquivalent(new ClipboardDataViewModel[] { arrayOfItems[0], arrayOfItems[1] }
+                , collectionVM.TaskCollection.Result);
+        }
+
+        [TestMethod]
+        public void Limit_SettingLimitLessThanOne_ThrowsException()
+        {
+            var collectionVM = GetCollectionVM();
+
+            Assert.ThrowsException<ArgumentException>(() => collectionVM.Limit = 0);
         }
 
         #endregion
