@@ -22,6 +22,12 @@ namespace ManiacClipboard.ViewModel
 
         #region Private fields
 
+        private int _limit;
+
+        private bool _alwaysFitToLimit;
+
+        private bool _isAscendingOrder;
+
         private ClipboardCollectionFilters _showTypeOfClipboardData = ClipboardCollectionFilters.All;
 
         private ClipboardCollectionFilters _storeTypeOfClipboardData = ClipboardCollectionFilters.All;
@@ -30,7 +36,7 @@ namespace ManiacClipboard.ViewModel
 
         private readonly HashSet<ClipboardDataViewModel> _mainCollection;
 
-        private readonly ObservableCollection<ClipboardDataViewModel> _observableCollection;
+        private ObservableCollection<ClipboardDataViewModel> _observableCollection;
 
         #endregion
 
@@ -52,6 +58,42 @@ namespace ManiacClipboard.ViewModel
         }
 
         public int Count => _mainCollection.Count;
+
+        public int Limit
+        {
+            get => _limit;
+            set
+            {
+                SetProperty(() => _limit == value, () => _limit = value);
+
+                FitToLimit();
+            }
+        }
+
+        public bool AlwaysFitToLimit
+        {
+            get => _alwaysFitToLimit;
+            set
+            {
+                SetProperty(() => _alwaysFitToLimit == value,
+                    () => _alwaysFitToLimit = value);
+
+                if (value)
+                    FitToLimit();
+            }
+        }
+
+        public bool IsAscendingOrder
+        {
+            get => _isAscendingOrder;
+            set
+            {
+                SetProperty(() => _isAscendingOrder == value,
+                    () => _isAscendingOrder = value);
+
+                Sort();
+            }
+        }
 
         /// <summary>
         /// Gets or sets flags that indicate what type of clipboard data is shown.
@@ -87,8 +129,8 @@ namespace ManiacClipboard.ViewModel
 
             if(IsAbleToBeStored(data) && _mainCollection.Add(data))
             {
-                if(IsAbleToBeShown(data))
-                    _observableCollection.Add(data);
+                if (IsAbleToBeShown(data))
+                    AddSorted(data);
 
                 return true;
             }
@@ -119,7 +161,7 @@ namespace ManiacClipboard.ViewModel
                     if(IsAbleToBeStored(item) && _mainCollection.Add(item))
                     {
                         if (IsAbleToBeShown(item))
-                            _observableCollection.Add(item);
+                            AddSorted(item);
                     }
                 }
 
@@ -260,6 +302,52 @@ namespace ManiacClipboard.ViewModel
         #endregion
 
         #region Private methods
+
+        private void FitToLimit()
+        {
+
+        }
+
+        private void AddSorted(ClipboardDataViewModel data)
+        {
+            int i;
+
+            if(IsAscendingOrder)
+            {
+                i = _observableCollection.Count - 1;
+
+                while (i >= 0 && _observableCollection[i].CopyTime.CompareTo(data.CopyTime) < 0)
+                    i--;
+            }
+            else
+            {
+                i = 0;
+
+                while (i < _observableCollection.Count &&
+                    _observableCollection[i].CopyTime.CompareTo(data.CopyTime) > 0)
+                    i++;
+            }
+
+            if (i == _observableCollection.Count || i < 0)
+                _observableCollection.Add(data);
+            else
+                _observableCollection.Insert(i, data);
+        }
+
+        private void Sort()
+        {
+            WorkOnCollection(() =>
+            {
+                if (IsAscendingOrder)
+                    _observableCollection = new ObservableCollection<ClipboardDataViewModel>(
+                        _observableCollection.OrderBy(n => n.CopyTime));
+                else
+                    _observableCollection = new ObservableCollection<ClipboardDataViewModel>(
+                        _observableCollection.OrderByDescending(n => n.CopyTime));
+
+                return new ReadOnlyObservableCollection<ClipboardDataViewModel>(_observableCollection);
+            });
+        }
 
         private void UpdateCollectionByShowFilter()
         {

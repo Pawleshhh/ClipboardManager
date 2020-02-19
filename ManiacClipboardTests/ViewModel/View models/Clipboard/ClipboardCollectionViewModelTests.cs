@@ -533,6 +533,123 @@ namespace ManiacClipboard.ViewModel.Tests
             CollectionAssert.AreEquivalent(expectedItems, collectionVM.TaskCollection.Result);
         }
 
+        [TestMethod]
+        public void Add_AddingDataInDescendingOrder_DataIsOrderedAsExpected()
+        {
+            var collectionVM = GetCollectionVM();
+            collectionVM.IsAscendingOrder = false;
+            ClipboardDataViewModel item1 = new TextClipboardDataViewModel(new TextClipboardData("data1", new DateTime(2020, 1, 2)));
+            ClipboardDataViewModel item2 = new TextClipboardDataViewModel(new TextClipboardData("data2", new DateTime(2020, 1, 1)));
+            ClipboardDataViewModel item3 = new TextClipboardDataViewModel(new TextClipboardData("data3", new DateTime(2020, 1, 5)));
+            ClipboardDataViewModel item4 = new TextClipboardDataViewModel(new TextClipboardData("data4", new DateTime(2020, 1, 4)));
+            var expectedCollection = new ClipboardDataViewModel[] { item3, item4, item1, item2 };
+
+            collectionVM.Add(item1);
+            collectionVM.Add(item2);
+            collectionVM.Add(item3);
+            collectionVM.Add(item4);
+
+            CollectionAssert.AreEqual(expectedCollection, collectionVM.TaskCollection.Result);
+        }
+
+        [TestMethod]
+        public void Add_AddingDataInAscendingOrder_DataIsOrderedAsExpected()
+        {
+            var collectionVM = GetCollectionVM();
+            collectionVM.IsAscendingOrder = true;
+            ClipboardDataViewModel item1 = new TextClipboardDataViewModel(new TextClipboardData("data1", new DateTime(2020, 1, 2)));
+            ClipboardDataViewModel item2 = new TextClipboardDataViewModel(new TextClipboardData("data2", new DateTime(2020, 1, 1)));
+            ClipboardDataViewModel item3 = new TextClipboardDataViewModel(new TextClipboardData("data3", new DateTime(2020, 1, 5)));
+            ClipboardDataViewModel item4 = new TextClipboardDataViewModel(new TextClipboardData("data4", new DateTime(2020, 1, 4)));
+            var expectedCollection = new ClipboardDataViewModel[] { item2, item1, item4, item3 };
+
+            collectionVM.Add(item1);
+            collectionVM.Add(item2);
+            collectionVM.Add(item3);
+            collectionVM.Add(item4);
+
+            CollectionAssert.AreEqual(expectedCollection, collectionVM.TaskCollection.Result);
+        }
+
+        [TestMethod]
+        public void AddRange_AddingDataInDescendingOrder_DataIsOrderedAsExpected()
+        {
+            var collectionVM = GetCollectionVM();
+            collectionVM.IsAscendingOrder = false;
+            ClipboardDataViewModel item1 = new TextClipboardDataViewModel(new TextClipboardData("data1", new DateTime(2020, 1, 2)));
+            ClipboardDataViewModel item2 = new TextClipboardDataViewModel(new TextClipboardData("data2", new DateTime(2020, 1, 1)));
+            ClipboardDataViewModel item3 = new TextClipboardDataViewModel(new TextClipboardData("data3", new DateTime(2020, 1, 5)));
+            ClipboardDataViewModel item4 = new TextClipboardDataViewModel(new TextClipboardData("data4", new DateTime(2020, 1, 4)));
+            var rangeToAdd1 = new ClipboardDataViewModel[] { item2, item3 };
+            var rangeToAdd2 = new ClipboardDataViewModel[] { item1, item4 };
+            var expectedCollection = new ClipboardDataViewModel[] { item3, item4, item1, item2 };
+
+            collectionVM.AddRange(rangeToAdd1);
+            collectionVM.AddRange(rangeToAdd2);
+            collectionVM.TaskCollection.Task.Wait();
+
+            CollectionAssert.AreEqual(expectedCollection, collectionVM.TaskCollection.Result);
+        }
+
+        [TestMethod]
+        public void AddRange_AddingDataInAscendingOrder_DataIsOrderedAsExpected()
+        {
+            var collectionVM = GetCollectionVM();
+            collectionVM.IsAscendingOrder = true;
+            ClipboardDataViewModel item1 = new TextClipboardDataViewModel(new TextClipboardData("data1", new DateTime(2020, 1, 2)));
+            ClipboardDataViewModel item2 = new TextClipboardDataViewModel(new TextClipboardData("data2", new DateTime(2020, 1, 1)));
+            ClipboardDataViewModel item3 = new TextClipboardDataViewModel(new TextClipboardData("data3", new DateTime(2020, 1, 5)));
+            ClipboardDataViewModel item4 = new TextClipboardDataViewModel(new TextClipboardData("data4", new DateTime(2020, 1, 4)));
+            var rangeToAdd1 = new ClipboardDataViewModel[] { item2, item3 };
+            var rangeToAdd2 = new ClipboardDataViewModel[] { item1, item4 };
+            var expectedCollection = new ClipboardDataViewModel[] { item2, item1, item4, item3 };
+
+            collectionVM.AddRange(rangeToAdd1);
+            collectionVM.AddRange(rangeToAdd2);
+            collectionVM.TaskCollection.Task.Wait();
+
+            CollectionAssert.AreEqual(expectedCollection, collectionVM.TaskCollection.Result);
+        }
+
+        [TestMethod]
+        public void IsAscendingOrder_SettingAsTrue_CollectionIsSortedInAscendingOrder()
+        {
+            var collectionVM = GetCollectionVM();
+            collectionVM.IsAscendingOrder = false;
+            ClipboardDataViewModel item1 = new TextClipboardDataViewModel(new TextClipboardData("data1", new DateTime(2020, 1, 2)));
+            ClipboardDataViewModel item2 = new TextClipboardDataViewModel(new TextClipboardData("data2", new DateTime(2020, 1, 1)));
+            ClipboardDataViewModel item3 = new TextClipboardDataViewModel(new TextClipboardData("data3", new DateTime(2020, 1, 5)));
+            ClipboardDataViewModel item4 = new TextClipboardDataViewModel(new TextClipboardData("data4", new DateTime(2020, 1, 4)));
+            var expectedCollection = new ClipboardDataViewModel[] { item2, item1, item4, item3 };
+            collectionVM.AddRange(new ClipboardDataViewModel[] { item1, item2, item3, item4 });
+            collectionVM.TaskCollection.Task.Wait();
+
+            collectionVM.IsAscendingOrder = true;
+            collectionVM.TaskCollection.Task.Wait();
+
+            CollectionAssert.AreEqual(expectedCollection, collectionVM.TaskCollection.Result);
+        }
+
+        [TestMethod]
+        public void IsAscendingOrder_SettingAsFalse_CollectionIsSortedInDescendingOrder()
+        {
+            var collectionVM = GetCollectionVM();
+            collectionVM.IsAscendingOrder = true;
+            ClipboardDataViewModel item1 = new TextClipboardDataViewModel(new TextClipboardData("data1", new DateTime(2020, 1, 2)));
+            ClipboardDataViewModel item2 = new TextClipboardDataViewModel(new TextClipboardData("data2", new DateTime(2020, 1, 1)));
+            ClipboardDataViewModel item3 = new TextClipboardDataViewModel(new TextClipboardData("data3", new DateTime(2020, 1, 5)));
+            ClipboardDataViewModel item4 = new TextClipboardDataViewModel(new TextClipboardData("data4", new DateTime(2020, 1, 4)));
+            var expectedCollection = new ClipboardDataViewModel[] { item3, item4, item1, item2 };
+
+            collectionVM.AddRange(new ClipboardDataViewModel[] { item1, item2, item3, item4 });
+            collectionVM.TaskCollection.Task.Wait();
+
+            collectionVM.IsAscendingOrder = false;
+            collectionVM.TaskCollection.Task.Wait();
+
+            CollectionAssert.AreEqual(expectedCollection, collectionVM.TaskCollection.Result);
+        }
+
         #endregion
 
         #region FieldInfos
