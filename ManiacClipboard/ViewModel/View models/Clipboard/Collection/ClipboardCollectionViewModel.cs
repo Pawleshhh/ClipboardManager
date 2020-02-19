@@ -158,6 +158,7 @@ namespace ManiacClipboard.ViewModel
             if(_mainCollection.Remove(data))
             {
                 _observableCollection.Remove(data);
+                data.Dispose();
 
                 if(AlwaysFitToLimit)
                     FitToLimit();
@@ -193,7 +194,10 @@ namespace ManiacClipboard.ViewModel
                 foreach (var item in collection)
                 {
                     if (_mainCollection.Remove(item))
+                    {
                         _observableCollection.Remove(item);
+                        item.Dispose();
+                    }
                 }
 
                 if (AlwaysFitToLimit)
@@ -205,6 +209,9 @@ namespace ManiacClipboard.ViewModel
         public void Clear()
         {
             WaitForTaskCollection();
+
+            foreach (var item in _mainCollection)
+                item.Dispose();
 
             _mainCollection.Clear();
             _observableCollection.Clear();
@@ -361,6 +368,7 @@ namespace ManiacClipboard.ViewModel
             {
                 _mainCollection.Remove(item);
                 _observableCollection.Remove(item);
+                item.Dispose();
             }
 
         }
@@ -439,6 +447,8 @@ namespace ManiacClipboard.ViewModel
                     {
                         if (IsAbleToBeShown(n))
                             _observableCollection.Remove(n);
+
+                        n.Dispose();
 
                         return true;
                     }
