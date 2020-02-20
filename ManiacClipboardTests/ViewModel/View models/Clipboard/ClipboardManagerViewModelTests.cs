@@ -142,27 +142,36 @@ namespace ManiacClipboard.ViewModel.Tests
         }
 
         [TestMethod]
-        public async Task IsClipboardEmpty_CheckingIfClipboardIsEmptyWhenItIsEmpty_ReturnsTrue()
+        public void IsClipboardEmpty_CheckingIfClipboardIsEmptyWhenItIsEmpty_ReturnsTrue()
         {
             MockClipboardService service = new MockClipboardService() { CurrentData = null };
             ClipboardManagerViewModel managerVM = new ClipboardManagerViewModel(service);
 
             bool result = managerVM.IsClipboardEmpty;
-            await managerVM.ClipboardTask.Task;
 
             Assert.IsTrue(result);
         }
 
         [TestMethod]
-        public async Task IsClipboardEmpty_CheckingIfClipboardIsEmptyWhenItIsNotEmpty_ReturnsFalse()
+        public void IsClipboardEmpty_CheckingIfClipboardIsEmptyWhenItIsNotEmpty_ReturnsFalse()
         {
             MockClipboardService service = new MockClipboardService() { CurrentData = new TextClipboardData("text") };
             ClipboardManagerViewModel managerVM = new ClipboardManagerViewModel(service);
 
             bool result = managerVM.IsClipboardEmpty;
-            await managerVM.ClipboardTask.Task;
 
             Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void Dispose_DisposesService_ServiceIsDisposed()
+        {
+            MockClipboardService service = new MockClipboardService();
+            ClipboardManagerViewModel managerVM = new ClipboardManagerViewModel(service);
+
+            managerVM.Dispose();
+
+            Assert.IsTrue(service.WasDisposed);
         }
 
         #endregion
@@ -173,6 +182,8 @@ namespace ManiacClipboard.ViewModel.Tests
         {
 
             public ClipboardData CurrentData { get; set; }
+
+            public bool WasDisposed { get; private set; } = false;
 
             public bool IsMonitoring { get; private set; }
 
@@ -192,7 +203,7 @@ namespace ManiacClipboard.ViewModel.Tests
 
             public void Dispose()
             {
-                throw new NotImplementedException();
+                WasDisposed = true;
             }
 
             public ClipboardData GetClipboardData()

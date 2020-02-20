@@ -73,14 +73,7 @@ namespace ManiacClipboard.ViewModel
             }
         }
 
-        public bool IsClipboardEmpty
-        {
-            get
-            {
-                CheckIfClipboardIsEmpty();
-                return _isClipboardEmpty;
-            }
-        }
+        public bool IsClipboardEmpty => _clipboardService.IsClipboardEmpty();
 
         public NotifyTaskCompletion ClipboardTask { get; private set; }
 
@@ -88,18 +81,18 @@ namespace ManiacClipboard.ViewModel
 
         #region Public methods
 
-        public async void AddCurrentData()
+        public void AddCurrentData()
         {
-            WorkOnClipboard(_clipboardService.GetClipboardDataAsync());
-            await ClipboardTask.Task;
+            WorkOnClipboard(() =>
+            {
+                ClipboardData data = _clipboardService.GetClipboardData();
+                if (data == null)
+                    return;
 
-            ClipboardData data = null;
-            if (!GetResultFromTask(ref data) || data == null)
-                return;
+                ClipboardDataViewModel dataVM = ClipboardDataViewModelFactory.Get(data);
 
-            ClipboardDataViewModel dataVM = ClipboardDataViewModelFactory.Get(data);
-
-            ClipboardCollectionVM.Add(dataVM);
+                ClipboardCollectionVM.Add(dataVM);
+            });
         }
 
         public void SetData(ClipboardDataViewModel dataVM)
@@ -125,6 +118,12 @@ namespace ManiacClipboard.ViewModel
         #endregion
 
         #region Private methods
+
+        protected override void DisposeUnmanaged()
+        {
+            IsMonitoring = false;
+            _clipboardService.Dispose();
+        }
 
         private void WaitForCurrentTask()
         {
@@ -187,19 +186,19 @@ namespace ManiacClipboard.ViewModel
             ClipboardCollectionVM.Add(clipboardDataVM);
         }
 
-        private async void CheckIfClipboardIsEmpty()
-        {
-            WorkOnClipboard(_clipboardService.IsClipboardEmptyAsync());
-            await ClipboardTask.Task;
+        //private async void CheckIfClipboardIsEmpty()
+        //{
+        //    WorkOnClipboard(_clipboardService.IsClipboardEmptyAsync());
+        //    await ClipboardTask.Task;
 
-            bool result = true;
-            if (!GetResultFromTask(ref result))
-                SetProperty(() => _isClipboardEmpty == true,
-                    () => _isClipboardEmpty = true, "IsClipboardEmpty");
-            else
-                SetProperty(() => _isClipboardEmpty == result,
-                    () => _isClipboardEmpty = result, "IsClipboardEmpty");
-        }
+        //    bool result = true;
+        //    if (!GetResultFromTask(ref result))
+        //        SetProperty(() => _isClipboardEmpty == true,
+        //            () => _isClipboardEmpty = true, "IsClipboardEmpty");
+        //    else
+        //        SetProperty(() => _isClipboardEmpty == result,
+        //            () => _isClipboardEmpty = result, "IsClipboardEmpty");
+        //}
 
         #endregion
 
