@@ -29,6 +29,8 @@ namespace ManiacClipboard.ViewModel
 
         private bool _isClipboardBusy;
 
+        private bool _isClipboardEmpty;
+
         #endregion
 
         #region Properties
@@ -75,12 +77,8 @@ namespace ManiacClipboard.ViewModel
         {
             get
             {
-                WorkOnClipboard(_clipboardService.IsClipboardEmptyAsync());
-                bool result = true;
-                if (!GetResultFromTask(ref result))
-                    return true;
-
-                return result;
+                CheckIfClipboardIsEmpty();
+                return _isClipboardEmpty;
             }
         }
 
@@ -90,9 +88,10 @@ namespace ManiacClipboard.ViewModel
 
         #region Public methods
 
-        public void AddCurrentData()
+        public async void AddCurrentData()
         {
             WorkOnClipboard(_clipboardService.GetClipboardDataAsync());
+            await ClipboardTask.Task;
 
             ClipboardData data = null;
             if (!GetResultFromTask(ref data) || data == null)
@@ -168,8 +167,6 @@ namespace ManiacClipboard.ViewModel
 
         private bool GetResultFromTask<T>(ref T result)
         {
-            WaitForCurrentTask();
-
             if(ClipboardTask is NotifyTaskCompletion<T> task)
             {
                 result = task.Result;
@@ -188,6 +185,20 @@ namespace ManiacClipboard.ViewModel
                 return;
 
             ClipboardCollectionVM.Add(clipboardDataVM);
+        }
+
+        private async void CheckIfClipboardIsEmpty()
+        {
+            WorkOnClipboard(_clipboardService.IsClipboardEmptyAsync());
+            await ClipboardTask.Task;
+
+            bool result = true;
+            if (!GetResultFromTask(ref result))
+                SetProperty(() => _isClipboardEmpty == true,
+                    () => _isClipboardEmpty = true, "IsClipboardEmpty");
+            else
+                SetProperty(() => _isClipboardEmpty == result,
+                    () => _isClipboardEmpty = result, "IsClipboardEmpty");
         }
 
         #endregion
