@@ -87,14 +87,82 @@ namespace ManiacClipboard.ViewModel.Tests
         }
 
         [TestMethod]
-        public async void GetCurrentData_GettingCurrentData_ReturnsCurrentData()
+        public async Task GetCurrentData_GettingCurrentData_CollectionContainsCurrentData()
         {
-            ClipboardData clipboardData = new TextClipboardData("text1");
+            TextClipboardData clipboardData = new TextClipboardData("text1");
+            TextClipboardDataViewModel clipboardDataVM = new TextClipboardDataViewModel(clipboardData);
             MockClipboardService service = new MockClipboardService();
             service.CurrentData = clipboardData;
             ClipboardManagerViewModel managerVM = new ClipboardManagerViewModel(service);
 
             managerVM.AddCurrentData();
+            await managerVM.ClipboardTask.Task;
+
+            Assert.IsTrue(managerVM.ClipboardCollectionVM.Contains(clipboardDataVM));
+        }
+
+        [TestMethod]
+        public async Task GetCurrentData_GettingCurrentDataWhenServiceHasNoData_CollectionDoesNotContainData()
+        {
+            MockClipboardService service = new MockClipboardService();
+            service.CurrentData = null;
+            ClipboardManagerViewModel managerVM = new ClipboardManagerViewModel(service);
+
+            managerVM.AddCurrentData();
+            await managerVM.ClipboardTask.Task;
+
+            Assert.AreEqual(0, managerVM.ClipboardCollectionVM.Count);
+        }
+
+        [TestMethod]
+        public async Task SetData_SetsGivenDataOnClipboard_ClipboardStoresGivenData()
+        {
+            TextClipboardData clipboardData = new TextClipboardData("text1");
+            TextClipboardDataViewModel clipboardDataVM = new TextClipboardDataViewModel(clipboardData);
+            MockClipboardService service = new MockClipboardService() { CurrentData = null };
+            ClipboardManagerViewModel managerVM = new ClipboardManagerViewModel(service);
+
+            managerVM.SetData(clipboardDataVM);
+            await managerVM.ClipboardTask.Task;
+
+            Assert.AreSame(clipboardData, service.CurrentData);
+        }
+
+        [TestMethod]
+        public async Task ClearClipboard_ClearingClipboard_ClipboardStoresNoData()
+        {
+            TextClipboardData clipboardData = new TextClipboardData("text1");
+            MockClipboardService service = new MockClipboardService() { CurrentData = clipboardData };
+            ClipboardManagerViewModel managerVM = new ClipboardManagerViewModel(service);
+
+            managerVM.ClearClipboard();
+            await managerVM.ClipboardTask.Task;
+
+            Assert.IsNull(service.CurrentData);
+        }
+
+        [TestMethod]
+        public async Task IsClipboardEmpty_CheckingIfClipboardIsEmptyWhenItIsEmpty_ReturnsTrue()
+        {
+            MockClipboardService service = new MockClipboardService() { CurrentData = null };
+            ClipboardManagerViewModel managerVM = new ClipboardManagerViewModel(service);
+
+            bool result = managerVM.IsClipboardEmpty();
+            await managerVM.ClipboardTask.Task;
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public async Task IsClipboardEmpty_CheckingIfClipboardIsEmptyWhenItIsNotEmpty_ReturnsFalse()
+        {
+            MockClipboardService service = new MockClipboardService() { CurrentData = new TextClipboardData("text") };
+            ClipboardManagerViewModel managerVM = new ClipboardManagerViewModel(service);
+
+            bool result = managerVM.IsClipboardEmpty();
+            await managerVM.ClipboardTask.Task;
+
+            Assert.IsFalse(result);
         }
 
         #endregion
@@ -114,12 +182,12 @@ namespace ManiacClipboard.ViewModel.Tests
 
             public void ClearClipboard()
             {
-                throw new NotImplementedException();
+                CurrentData = null;
             }
 
             public Task ClearClipboardAsync()
             {
-                throw new NotImplementedException();
+                return Task.Run(() => ClearClipboard());
             }
 
             public void Dispose()
@@ -149,22 +217,22 @@ namespace ManiacClipboard.ViewModel.Tests
 
             public bool IsClipboardEmpty()
             {
-                throw new NotImplementedException();
+                return CurrentData == null;
             }
 
             public Task<bool> IsClipboardEmptyAsync()
             {
-                throw new NotImplementedException();
+                return Task.Run(() => IsClipboardEmpty());
             }
 
             public void SetClipboardData(ClipboardData data)
             {
-                throw new NotImplementedException();
+                CurrentData = data;
             }
 
             public Task SetClipboardDataAsync(ClipboardData data)
             {
-                throw new NotImplementedException();
+                return Task.Run(() => SetClipboardData(data));
             }
 
             public void StartMonitoring()

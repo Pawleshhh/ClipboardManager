@@ -16,12 +16,12 @@ namespace ManiacClipboard.ViewModel
             }
         }
 
-        public NotifyTaskCompletion(Task task, Action finished)
+        public NotifyTaskCompletion(Task task, Action finished) : this(task)
         {
             this.finished = finished;
         }
 
-        protected Action finished;
+        protected readonly Action finished;
 
         public Task Task { get; }
 
@@ -85,7 +85,7 @@ namespace ManiacClipboard.ViewModel
             }
             else
             {
-                OnPropertyChanged("IsSuccessfullyCompleted", "Result");
+                OnPropertyChanged("IsSuccessfullyCompleted");
             }
 
             finished?.Invoke();

@@ -27,9 +27,21 @@ namespace ManiacClipboard.ViewModel
 
         private IClipboardService _clipboardService;
 
+        private bool _isClipboardBusy;
+
         #endregion
 
         #region Properties
+
+        public bool IsClipboardBusy
+        {
+            get => _isClipboardBusy;
+            set
+            {
+                SetProperty(() => _isClipboardBusy == value,
+                    () => _isClipboardBusy = value);
+            }
+        }
 
         public ClipboardCollectionViewModel ClipboardCollectionVM { get; }
 
@@ -59,20 +71,18 @@ namespace ManiacClipboard.ViewModel
             }
         }
 
-        public Task CurrentTask { get; private set; }
+        public NotifyTaskCompletion ClipboardTask { get; private set; }
 
         #endregion
 
         #region Public methods
 
-        public async void AddCurrentData()
+        public void AddCurrentData()
         {
-            WaitForCurrentTask();
-            CurrentTask = _clipboardService.GetClipboardDataAsync();
+            WorkOnClipboard(_clipboardService.GetClipboardDataAsync());
 
-            var data = GetResultFromTask<ClipboardData>();
-
-            if (data == null)
+            ClipboardData data = null;
+            if (!GetResultFromTask(ref data) || data == null)
                 return;
 
             ClipboardDataViewModel dataVM = ClipboardDataViewModelFactory.Get(data);
@@ -80,11 +90,26 @@ namespace ManiacClipboard.ViewModel
             ClipboardCollectionVM.Add(dataVM);
         }
 
-        public async void SetData(ClipboardDataViewModel dataVM)
+        public void SetData(ClipboardDataViewModel dataVM)
         {
             ClipboardData data = ClipboardDataViewModel.GetModel(dataVM);
 
-            await _clipboardService.SetClipboardDataAsync(data);
+            WorkOnClipboard(_clipboardService.SetClipboardDataAsync(data));
+        }
+
+        public void ClearClipboard()
+        {
+            WorkOnClipboard(_clipboardService.ClearClipboardAsync());
+        }
+
+        public bool IsClipboardEmpty()
+        {
+            WorkOnClipboard(_clipboardService.IsClipboardEmptyAsync());
+            bool result = true;
+            if (!GetResultFromTask(ref result))
+                return true;
+
+            return result;
         }
 
         public void SplitData<T>(CollectionClipboardDataViewModel<T> collectionVM)
@@ -101,19 +126,55 @@ namespace ManiacClipboard.ViewModel
 
         private void WaitForCurrentTask()
         {
-            CurrentTask?.Wait();
+            ClipboardTask?.Task.Wait();
         }
 
-        private async void WorkOnTask(Task task)
+        private void WorkOnClipboard(Action action)
         {
             WaitForCurrentTask();
-            CurrentTask = task;
-            await CurrentTask;
+
+            IsClipboardBusy = true;
+            ClipboardTask = new NotifyTaskCompletion(Task.Run(() => action()),
+                () => IsClipboardBusy = false);
         }
 
-        private T GetResultFromTask<T>()
+        private void WorkOnClipboard<TResult>(Func<TResult> func)
         {
-            return ((Task<T>)CurrentTask).Result;
+            WaitForCurrentTask();
+
+            IsClipboardBusy = true;
+            ClipboardTask = new NotifyTaskCompletion<TResult>(Task.Run(() => func()),
+                () => IsClipboardBusy = false);
+        }
+
+        private void WorkOnClipboard(Task task)
+        {
+            WaitForCurrentTask();
+
+            IsClipboardBusy = true;
+            ClipboardTask = new NotifyTaskCompletion(task, () => IsClipboardBusy = false);
+        }
+
+        private void WorkOnClipboard<TResult>(Task<TResult> task)
+        {
+            WaitForCurrentTask();
+
+            IsClipboardBusy = true;
+            ClipboardTask = new NotifyTaskCompletion<TResult>(task, () => IsClipboardBusy = false);
+        }
+
+        private bool GetResultFromTask<T>(ref T result)
+        {
+            WaitForCurrentTask();
+
+            if(ClipboardTask is NotifyTaskCompletion<T> task)
+            {
+                result = task.Result;
+                return true;
+            }
+
+            result = default;
+            return false;
         }
 
         private void _clipboardService_ClipboardChanged(object sender, ClipboardChangedEventArgs e)

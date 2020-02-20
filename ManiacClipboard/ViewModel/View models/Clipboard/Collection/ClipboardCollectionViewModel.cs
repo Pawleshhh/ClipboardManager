@@ -217,6 +217,12 @@ namespace ManiacClipboard.ViewModel
             _observableCollection.Clear();
         }
 
+        public bool Contains(ClipboardDataViewModel data)
+            => _mainCollection.Contains(data);
+
+        public bool ContainsObservable(ClipboardDataViewModel data)
+            => _observableCollection.Contains(data);
+
         public void AddShowFilter(ClipboardCollectionFilters filter)
         {
             if (filter == ClipboardCollectionFilters.None)
