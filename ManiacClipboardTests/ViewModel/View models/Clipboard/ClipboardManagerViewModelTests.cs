@@ -147,7 +147,7 @@ namespace ManiacClipboard.ViewModel.Tests
             MockClipboardService service = new MockClipboardService() { CurrentData = null };
             ClipboardManagerViewModel managerVM = new ClipboardManagerViewModel(service);
 
-            bool result = managerVM.IsClipboardEmpty();
+            bool result = managerVM.IsClipboardEmpty;
             await managerVM.ClipboardTask.Task;
 
             Assert.IsTrue(result);
@@ -159,7 +159,7 @@ namespace ManiacClipboard.ViewModel.Tests
             MockClipboardService service = new MockClipboardService() { CurrentData = new TextClipboardData("text") };
             ClipboardManagerViewModel managerVM = new ClipboardManagerViewModel(service);
 
-            bool result = managerVM.IsClipboardEmpty();
+            bool result = managerVM.IsClipboardEmpty;
             await managerVM.ClipboardTask.Task;
 
             Assert.IsFalse(result);

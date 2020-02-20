@@ -71,6 +71,19 @@ namespace ManiacClipboard.ViewModel
             }
         }
 
+        public bool IsClipboardEmpty
+        {
+            get
+            {
+                WorkOnClipboard(_clipboardService.IsClipboardEmptyAsync());
+                bool result = true;
+                if (!GetResultFromTask(ref result))
+                    return true;
+
+                return result;
+            }
+        }
+
         public NotifyTaskCompletion ClipboardTask { get; private set; }
 
         #endregion
@@ -100,16 +113,6 @@ namespace ManiacClipboard.ViewModel
         public void ClearClipboard()
         {
             WorkOnClipboard(_clipboardService.ClearClipboardAsync());
-        }
-
-        public bool IsClipboardEmpty()
-        {
-            WorkOnClipboard(_clipboardService.IsClipboardEmptyAsync());
-            bool result = true;
-            if (!GetResultFromTask(ref result))
-                return true;
-
-            return result;
         }
 
         public void SplitData<T>(CollectionClipboardDataViewModel<T> collectionVM)
