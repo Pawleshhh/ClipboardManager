@@ -121,6 +121,7 @@ namespace ManiacClipboard.ViewModel
 
         protected override void DisposeUnmanaged()
         {
+            ClipboardCollectionVM.Dispose();
             IsMonitoring = false;
             _clipboardService.Dispose();
         }

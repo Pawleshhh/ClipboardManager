@@ -352,6 +352,11 @@ namespace ManiacClipboard.ViewModel
 
         #region Private methods
 
+        protected override void DisposeUnmanaged()
+        {
+            Clear();
+        }
+
         private void _FitToLimit()
         {
             int reqSpace = _observableCollection.Count - Limit;
