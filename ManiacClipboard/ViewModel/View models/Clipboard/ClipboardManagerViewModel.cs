@@ -29,8 +29,6 @@ namespace ManiacClipboard.ViewModel
 
         private bool _isClipboardBusy;
 
-        private bool _isClipboardEmpty;
-
         #endregion
 
         #region Properties
