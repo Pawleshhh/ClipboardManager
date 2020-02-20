@@ -108,7 +108,7 @@ namespace ManiacClipboard.ViewModel
         {
             ThrowIfDisposed();
 
-            WindowsClipboardDataType type = WindowsClipboardDataType.None;
+            ClipboardDataType type = ClipboardDataType.Unknown;
 
             (object data, string[] formats) = WorkOnClipboardSafe(() =>
             {
@@ -212,20 +212,20 @@ namespace ManiacClipboard.ViewModel
         /// <summary>
         /// <see cref="IClipboardService.GetClipboardDataType"/>.
         /// </summary>
-        public WindowsClipboardDataType GetClipboardDataType()
+        public ClipboardDataType GetClipboardDataType()
         {
             ThrowIfDisposed();
 
             return WorkOnClipboardSafe(() =>
             {
                 return GetClipboardDataTypeNotSafe();
-            }, WindowsClipboardDataType.None);
+            }, ClipboardDataType.Unknown);
         }
 
         /// <summary>
         /// <see cref="IClipboardService.GetClipboardDataTypeAsync"/>.
         /// </summary>
-        public Task<WindowsClipboardDataType> GetClipboardDataTypeAsync()
+        public Task<ClipboardDataType> GetClipboardDataTypeAsync()
         {
             return Task.Run(() => GetClipboardDataType());
         }
@@ -350,7 +350,7 @@ namespace ManiacClipboard.ViewModel
         private ClipboardData GetClipboardDataWithSource()
         {
             ClipboardSource source = null;
-            WindowsClipboardDataType type = WindowsClipboardDataType.None;
+            ClipboardDataType type = ClipboardDataType.Unknown;
             Thread thread = new Thread(() => source = GetClipboardSource());
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
@@ -367,21 +367,21 @@ namespace ManiacClipboard.ViewModel
             return ClipboardDataFactory(data, type, DateTime.Now, source, formats);
         }
 
-        private WindowsClipboardDataType GetClipboardDataTypeNotSafe()
+        private ClipboardDataType GetClipboardDataTypeNotSafe()
         {
-            if (Clipboard.ContainsText()) return WindowsClipboardDataType.Text;
-            if (Clipboard.ContainsFileDropList()) return WindowsClipboardDataType.FileList;
-            if (Clipboard.ContainsImage()) return WindowsClipboardDataType.Image;
-            if (Clipboard.ContainsAudio()) return WindowsClipboardDataType.Audio;
+            if (Clipboard.ContainsText()) return ClipboardDataType.Text;
+            if (Clipboard.ContainsFileDropList()) return ClipboardDataType.FileList;
+            if (Clipboard.ContainsImage()) return ClipboardDataType.Image;
+            //if (Clipboard.ContainsAudio()) return WindowsClipboardDataType.Audio;
 
-            return WindowsClipboardDataType.None;
+            return ClipboardDataType.Unknown;
         }
 
-        private ClipboardData ClipboardDataFactory(object data, WindowsClipboardDataType type, DateTime copyTime, ClipboardSource source = null, params string[] formats)
+        private ClipboardData ClipboardDataFactory(object data, ClipboardDataType type, DateTime copyTime, ClipboardSource source = null, params string[] formats)
         {
             switch (type)
             {
-                case WindowsClipboardDataType.Text:
+                case ClipboardDataType.Text:
                     string text = (string)data;
                     if(AutoConvert)
                     {
@@ -393,7 +393,7 @@ namespace ManiacClipboard.ViewModel
 
                     return new TextClipboardData((string)data, copyTime, source);
 
-                case WindowsClipboardDataType.FileList:
+                case ClipboardDataType.FileList:
                     StringCollection collection = (StringCollection)data;
                     if (collection.Count == 1)
                         return new PathClipboardData(collection[0], Directory.Exists(collection[0]), copyTime, source);
@@ -402,7 +402,7 @@ namespace ManiacClipboard.ViewModel
                             Select(n => new KeyValuePair<string, bool>(n, Directory.Exists(n))).
                             ToArray(), copyTime, source);
 
-                case WindowsClipboardDataType.Image:
+                case ClipboardDataType.Image:
                     MemoryStream bmp = new MemoryStream();
 
                     BitmapEncoder enc = new BmpBitmapEncoder();
@@ -418,23 +418,23 @@ namespace ManiacClipboard.ViewModel
             }
         }
 
-        private (object data, string[] formats) GetDataByType(WindowsClipboardDataType type)
+        private (object data, string[] formats) GetDataByType(ClipboardDataType type)
         {
             switch (type)
             {
-                case WindowsClipboardDataType.Text:
+                case ClipboardDataType.Text:
                     return (Clipboard.GetText(), null);
 
-                case WindowsClipboardDataType.FileList:
+                case ClipboardDataType.FileList:
                     return (Clipboard.GetFileDropList(), null);
 
-                case WindowsClipboardDataType.Image:
+                case ClipboardDataType.Image:
                     var img = Clipboard.GetImage();
                     img.Freeze();
                     return (img, null);
 
-                case WindowsClipboardDataType.Audio:
-                    return (Clipboard.GetAudioStream(), null);
+                //case WindowsClipboardDataType.Audio:
+                //    return (Clipboard.GetAudioStream(), null);
 
                 default: //Unknown
                     IDataObject dataObject = Clipboard.GetDataObject();

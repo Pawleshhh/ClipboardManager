@@ -60,8 +60,8 @@ namespace ManiacClipboard.ViewModel
         /// <summary>
         /// Gets type of data currently stored in the clipboard.
         /// </summary>
-        /// <returns>Returns type of clipboard data as <see cref="WindowsClipboardDataType"/>.</returns>
-        WindowsClipboardDataType GetClipboardDataType();
+        /// <returns>Returns type of clipboard data as <see cref="ClipboardDataType"/>.</returns>
+        ClipboardDataType GetClipboardDataType();
 
         ///// <summary>
         ///// Tries to get data that is currently stored on the clipboard.
@@ -111,8 +111,8 @@ namespace ManiacClipboard.ViewModel
         /// <summary>
         /// Gets type of data currently stored in the clipboard asynchronously.
         /// </summary>
-        /// <returns>Returns task whose result is <see cref="WindowsClipboardDataType"/>.</returns>
-        Task<WindowsClipboardDataType> GetClipboardDataTypeAsync();
+        /// <returns>Returns task whose result is <see cref="ClipboardDataType"/>.</returns>
+        Task<ClipboardDataType> GetClipboardDataTypeAsync();
 
         /// <summary>
         /// Clears clipboard from any data it stores asynchronously.

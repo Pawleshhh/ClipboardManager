@@ -205,12 +205,12 @@ namespace ManiacClipboard.ViewModel.Tests
                 return Task.Run(() => CurrentData);
             }
 
-            public WindowsClipboardDataType GetClipboardDataType()
+            public ClipboardDataType GetClipboardDataType()
             {
                 throw new NotImplementedException();
             }
 
-            public Task<WindowsClipboardDataType> GetClipboardDataTypeAsync()
+            public Task<ClipboardDataType> GetClipboardDataTypeAsync()
             {
                 throw new NotImplementedException();
             }
