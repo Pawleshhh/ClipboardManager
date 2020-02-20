@@ -101,11 +101,6 @@ namespace ManiacClipboard.Model
         /// </summary>
         public bool KeepThat { get; set; }
 
-        /// <summary>
-        /// Gets or sets whether the data is current or not.
-        /// </summary>
-        public bool IsCurrent { get; set; }
-
         #endregion Properties
 
         #region Public methods

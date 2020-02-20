@@ -46,13 +46,6 @@ namespace ManiacClipboard.ViewModel
                                     () => _clipboardData.KeepThat = value);
         }
 
-        public bool IsCurrent
-        {
-            get => _clipboardData.IsCurrent;
-            set => SetProperty(() => _clipboardData.IsCurrent == value,
-                                    () => _clipboardData.IsCurrent = value);
-        }
-
         #endregion
 
         #region Public methods
