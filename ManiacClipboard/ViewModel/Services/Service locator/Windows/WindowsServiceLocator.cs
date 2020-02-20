@@ -37,11 +37,24 @@ namespace ManiacClipboard.ViewModel
             }
         }
 
+        public IUserMessageService UserMessageService
+        {
+            get
+            {
+                if (_userMessageService == null)
+                    _userMessageService = new UserMessageWindowsService();
+
+                return _userMessageService;
+            }
+        }
+
         #endregion
 
-        #region Static
+        #region Static fields
 
         private static IClipboardService _clipboardService;
+
+        private static IUserMessageService _userMessageService;
 
         #endregion
 

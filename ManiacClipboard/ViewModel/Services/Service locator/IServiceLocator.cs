@@ -9,5 +9,7 @@ namespace ManiacClipboard.ViewModel
 
         IClipboardService ClipboardService { get; }
 
+        IUserMessageService UserMessageService { get; }
+
     }
 }
