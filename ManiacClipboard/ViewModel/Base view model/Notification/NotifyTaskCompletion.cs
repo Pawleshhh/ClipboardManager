@@ -109,8 +109,6 @@ namespace ManiacClipboard.ViewModel
             Task = task;
         }
 
-        private Action _finished;
-
         public new Task<TResult> Task { get; }
 
         public TResult Result
@@ -147,7 +145,7 @@ namespace ManiacClipboard.ViewModel
                 OnPropertyChanged("IsSuccessfullyCompleted", "Result");
             }
 
-            _finished?.Invoke();
+            finished?.Invoke();
         }
     }
 }
