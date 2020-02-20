@@ -12,7 +12,7 @@ namespace ManiacClipboard.ViewModel
             if (serviceLocator == null)
                 throw new ArgumentNullException("serviceLocator");
 
-            ClipboardManager = new ClipboardManagerViewModel(serviceLocator.GetClipboardService());
+            ClipboardManager = new ClipboardManagerViewModel(serviceLocator.ClipboardService);
         }
 
         #endregion

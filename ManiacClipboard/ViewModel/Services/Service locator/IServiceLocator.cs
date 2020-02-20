@@ -7,7 +7,7 @@ namespace ManiacClipboard.ViewModel
     public interface IServiceLocator
     {
 
-        IClipboardService GetClipboardService();
+        IClipboardService ClipboardService { get; }
 
     }
 }
