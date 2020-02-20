@@ -117,6 +117,17 @@ namespace ManiacClipboard.ViewModel
 
         #region Private methods
 
+        private void _clipboardService_ClipboardChanged(object sender, ClipboardChangedEventArgs e)
+        {
+            ClipboardDataViewModel clipboardDataVM = ClipboardDataViewModelFactory.Get(e.ClipboardData);
+
+            if (clipboardDataVM == null)
+                return;
+
+            ClipboardCollectionVM.Add(clipboardDataVM);
+            OnPropertyChanged("IsClipboardEmpty");
+        }
+
         protected override void DisposeUnmanaged()
         {
             ClipboardCollectionVM.Dispose();
@@ -135,7 +146,7 @@ namespace ManiacClipboard.ViewModel
 
             IsClipboardBusy = true;
             ClipboardTask = new NotifyTaskCompletion(Task.Run(() => action()),
-                () => IsClipboardBusy = false);
+                FinishTask);
         }
 
         private void WorkOnClipboard<TResult>(Func<TResult> func)
@@ -144,7 +155,7 @@ namespace ManiacClipboard.ViewModel
 
             IsClipboardBusy = true;
             ClipboardTask = new NotifyTaskCompletion<TResult>(Task.Run(() => func()),
-                () => IsClipboardBusy = false);
+                FinishTask);
         }
 
         private void WorkOnClipboard(Task task)
@@ -152,7 +163,7 @@ namespace ManiacClipboard.ViewModel
             WaitForCurrentTask();
 
             IsClipboardBusy = true;
-            ClipboardTask = new NotifyTaskCompletion(task, () => IsClipboardBusy = false);
+            ClipboardTask = new NotifyTaskCompletion(task, FinishTask);
         }
 
         private void WorkOnClipboard<TResult>(Task<TResult> task)
@@ -160,29 +171,13 @@ namespace ManiacClipboard.ViewModel
             WaitForCurrentTask();
 
             IsClipboardBusy = true;
-            ClipboardTask = new NotifyTaskCompletion<TResult>(task, () => IsClipboardBusy = false);
+            ClipboardTask = new NotifyTaskCompletion<TResult>(task, FinishTask);
         }
 
-        private bool GetResultFromTask<T>(ref T result)
+        private void FinishTask()
         {
-            if(ClipboardTask is NotifyTaskCompletion<T> task)
-            {
-                result = task.Result;
-                return true;
-            }
-
-            result = default;
-            return false;
-        }
-
-        private void _clipboardService_ClipboardChanged(object sender, ClipboardChangedEventArgs e)
-        {
-            ClipboardDataViewModel clipboardDataVM = ClipboardDataViewModelFactory.Get(e.ClipboardData);
-
-            if (clipboardDataVM == null)
-                return;
-
-            ClipboardCollectionVM.Add(clipboardDataVM);
+            IsClipboardBusy = false;
+            OnPropertyChanged("IsClipboardEmpty");
         }
 
         //private async void CheckIfClipboardIsEmpty()
