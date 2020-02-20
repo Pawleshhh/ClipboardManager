@@ -36,6 +36,8 @@ namespace ManiacClipboard.Model
         /// Gets or sets whether the stored data is supposed to be kept or not.
         /// </summary>
         bool KeepThat { get; set; }
+
+        bool IsCurrent { get; set; }
     }
 
     public interface IClipboardData<T> : IClipboardData
